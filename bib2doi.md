@@ -1,6 +1,6 @@
 ---
 doi: 
-bibtex: '@misc{https://doi.org/10.48550/arxiv.2311.08581,  doi = {10.48550/ARXIV.2311.08581},  url = {https://arxiv.org/abs/2311.08581},  author = {Zielonka, Wojciech and Bagautdinov, Timur and Saito, Shunsuke and Zollh\"{o}fer, Michael and Thies, Justus and Romero, Javier},  title = {Drivable 3D Gaussian Avatars},  publisher = {arXiv},  year = {2023}}'
+bibtex: "@inproceedings{Guler2017,  title = {DenseReg: Fully Convolutional Dense Shape Regression In-the-Wild},  url = {http://dx.doi.org/10.1109/CVPR.2017.280},  DOI = {10.1109/cvpr.2017.280},  booktitle = {2017 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},  publisher = {IEEE},  author = {Guler, Riza Alp and Trigeorgis, George and Antonakos, Epameinondas and Snape, Patrick and Zafeiriou, Stefanos and Kokkinos, Iasonas},  year = {2017},  month = jul }"
 ---
 
 ```dataviewjs

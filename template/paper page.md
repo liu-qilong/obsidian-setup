@@ -3,11 +3,11 @@ tags:
   - Paper
 date: <%tp.date.now()%>
 update: []
-biblist: 
-biblink: 
-bibnote:
-  - tbf
-bibremark: 
+biblist: []
+biblink: []
+bibbadge: []
+bibnote: []
+bibremark: [] 
 bibpdf:
 ---
 

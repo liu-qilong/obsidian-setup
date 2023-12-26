@@ -11,8 +11,14 @@ commands.push(`class root {\n${file.file.name}\n}`)
 let papers = dv.pages(`#Paper and [[]]`)
 	.sort(p => p.year, 'asc')
 
+let badge2emoji = {
+    'skimmed': '🪫',
+    'read': '🔋',
+    'seminal': '💡',
+}
+
 for (let p of papers) {
-	commands.push(`class ${p.bibid} {\n${p.bibnote.join('\n')}\n${dv.isArray(p.bibremark)?(p.bibremark.map(p => `(${p})`).join('\n')):('')}}`)
+	commands.push(`class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibremark)?(p.bibremark.map(p => `*(${p})`).join('\n')):('')}}`)
 }
 
 // parse paper branches

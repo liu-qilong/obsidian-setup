@@ -25,9 +25,15 @@ dv.paragraph(commands.join('\n'))
 dv.header(2, 'Flow')
 commands = ['```mermaid\nclassDiagram']
 
+let badge2emoji = {
+    'skimmed': '🪫',
+    'read': '🔋',
+    'seminal': '💡',
+}
+
 function paper_node(link) {
-	paper = dv.page(link)
-	return `class ${paper.bibid} {\n ${paper.bibnote.join('\n')}\n ${dv.isArray(paper.bibremark)?(paper.bibremark.map(p => `(${p})`).join('\n')):('')}\n}`
+	p = dv.page(link)
+	return `class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibremark)?(p.bibremark.map(p => `*(${p})`).join('\n')):('')}}`
 }
 
 commands.push(paper_node(file.file.link))

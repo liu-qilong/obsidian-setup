@@ -57,27 +57,3 @@ if (papers.length > 0) {
 		papers.map(n => [n.file.link, n.title, n.date, (n.update == null)?(null):(n.update.flat())])
 	)
 }
-
-// chats
-let chats = dv.pages("#Chat")
-	.where(n => {
-		var dates = [n.date]
-		
-		if (n.update != null) {
-			dates.push(...n.update.flat())
-		}
-		
-		for (let date of dates) {
-			if (dv.equal(date, today)) {
-				return true
-			}
-		}
-	})
-
-if (chats.length > 0) {
-	dv.header(2, 'Chats 🤖️')
-	dv.table(
-		['link', 'date', 'update'],
-		chats.map(n => [n.file.link, n.date, (n.update == null)?(null):(n.update.flat())])
-	)
-}

@@ -51,16 +51,6 @@ if (lists.length > 0) {
     )
 }
 
-// chats
-let chats = dv.pages(`#Chat and (${current_tag} or [[]])`).sort(n => n.date, 'desc')
-
-if (chats.length > 0) {
-    dv.header(2, 'Chats')
-    dv.table(
-        ['link', 'date', 'update'],
-        chats.map(p => [p.file.link, p.date, (p.update == null)?(null):(p.update.flat())])
-    )
-}
 
 // thoughts
 let thoughts = dv.pages(`#Diary and (${current_tag} or [[]])`).file.lists
