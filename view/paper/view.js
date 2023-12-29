@@ -23,7 +23,14 @@ dv.paragraph(commands.join('\n'))
 
 // flow
 dv.header(2, 'Flow')
-commands = ['```mermaid\nclassDiagram']
+
+mermaid_style = "%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryTextColor': 'lightgray', 'primaryBorderColor': '#00000000', 'lineColor': 'gray', 'mainBkg': '#00000000' }}}%%"
+// priminaryTextColor: text color
+// primaryBorderColor: class box segment line color
+// lineColor: line color of the links
+// mainBkg: background color of the links' text box
+
+commands = [`\`\`\`mermaid\n${mermaid_style}classDiagram`]
 
 let badge2emoji = {
     'skimmed': '🪫',
@@ -33,7 +40,7 @@ let badge2emoji = {
 
 function paper_node(link) {
 	p = dv.page(link)
-	return `class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibremark)?(p.bibremark.map(p => `*(${p})`).join('\n')):('')}}`
+	return `class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibcomment)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')}}`
 }
 
 commands.push(paper_node(file.file.link))
