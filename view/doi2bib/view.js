@@ -16,7 +16,7 @@ dv.header(2, 'BibTeX to YAML')
 
 dv.paragraph('The YAML format entry information should be shown as follows.')
 
-function parse_bitex(bibtexData) {
+function parse_bitex(bibtexData, gen_id = false) {
 
 	// match bibtype, bibid, & fields
 	const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
@@ -58,28 +58,45 @@ function parse_bitex(bibtexData) {
 				stack.pop()
 			}
 
-			if (max_layer > 0 && stack.length === 0) {
-				// when the field has {} layers, complete parsing when the { stack is empty
-				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(':', '{:}'))
+			if ((max_layer > 0 && stack.length === 0) || (max_layer === 0 && (char === ',' || char === '}' || idx === fields_str.length - 1))) {
+				// when the field has {} pairs, complete parsing when the '{' stack is empty
+				// when the field has no {} layers, complete parsing when the ',' or '}' is encountered or the string ends
+				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(": ", "{:}"))
 				store = ''
 				max_layer = 0
-				mode = 'key'
-			} else if (max_layer === 0 && (char === ',' || char === '}' || idx === fields_str.length - 1)) {
-				// when the field has no {} layers, complete parsing when the ,/} is encountered or the string ends
-				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(':', '{:}'))
-				store = ''
 				mode = 'key'
 			}
 		}
 	}
 	
 	keys.map((key, idx) => { fields[key] = values[idx] })
+
+	// if true, generate bibid in the format of SurnameNameYear
+	if (gen_id === true) {
+		if (keys.includes('author')) {
+			let authorIndex = keys.indexOf('author')
+			let authors = values[authorIndex].split(' and ')
+			let firstAuthor = authors[0]
+			let firstName, lastName
+
+			if (firstAuthor.includes(',')) {
+				[lastName, firstName] = firstAuthor.split(',').map(s => s.trim())
+			} else {
+				let nameParts = firstAuthor.split(' ').map(s => s.trim())
+				lastName = nameParts.pop()
+				firstName = nameParts.join(' ')
+			}
+
+			fields['bibid'] = `${lastName}${firstName}${fields['year']}`.replace(/[ {}\-`'"=\\]/g, '')
+			console.log(fields['bibid'])
+		}
+	}
 	return fields
 }
 
 if (file.bibtex != null) {
 	const bibtex = file.bibtex
-	const bibjson = parse_bitex(bibtex)
+	const bibjson = parse_bitex(bibtex, gen_id = true)
 	let commands = ['```']
 
 	for (let [key, value] of Object.entries(bibjson)) {
