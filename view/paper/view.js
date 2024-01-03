@@ -24,13 +24,11 @@ dv.paragraph(commands.join('\n'))
 // flow
 dv.header(2, 'Flow')
 
-mermaid_style = "%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryTextColor': 'lightgray', 'primaryBorderColor': '#00000000', 'lineColor': 'gray', 'mainBkg': '#00000000' }}}%%"
-// priminaryTextColor: text color
-// primaryBorderColor: class box segment line color
-// lineColor: line color of the links
+mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
+// nodeBorder: class box segment line color
 // mainBkg: background color of the links' text box
 
-commands = [`\`\`\`mermaid\n${mermaid_style}classDiagram`]
+commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
 
 let badge2emoji = {
     'skimmed': '🪫',
@@ -38,12 +36,20 @@ let badge2emoji = {
     'seminal': '💡',
 }
 
-function paper_node(link) {
-	p = dv.page(link)
-	return `class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibcomment)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')}}`
+function paper_node(p) {
+	let badge_str = (dv.isArray(p.bibbadge) && p.bibbadge.length > 0)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')
+	let note_str = (dv.isArray(p.bibnote) && p.bibnote.length > 0)?(p.bibnote.join('\n')):('')
+	let comment_str = (dv.isArray(p.bibcomment) && p.bibcomment.length > 0)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')
+
+	if (badge_str + note_str + comment_str != '') {
+		return `class ${p.bibid} {\n${badge_str}${note_str}\n${comment_str}}`
+	} else {
+		return `class ${p.bibid}`
+	}
 }
 
-commands.push(paper_node(file.file.link))
+p = dv.page(file.file.link)
+commands.push(paper_node(p))
 
 if (dv.isArray(file.biblink)) {
 	// find linked papers

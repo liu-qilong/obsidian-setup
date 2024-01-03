@@ -3,13 +3,11 @@ dv.header(2, 'Flow')
 
 const file = dv.current()
 
-mermaid_style = "%%{ init: { 'theme': 'base', 'themeVariables': { 'primaryTextColor': 'lightgray', 'primaryBorderColor': '#00000000', 'lineColor': 'gray', 'mainBkg': '#00000000' }}}%%"
-// priminaryTextColor: text color
-// primaryBorderColor: class box segment line color
-// lineColor: line color of the links
+mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
+// nodeBorder: class box segment line color
 // mainBkg: background color of the links' text box
 
-let commands = [`\`\`\`mermaid\n${mermaid_style}classDiagram`]
+let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
 
 // root class
 commands.push(`class root {\n${file.file.name}\n}`)
@@ -24,8 +22,20 @@ let badge2emoji = {
     'seminal': '💡',
 }
 
+function paper_node(p) {
+	let badge_str = (dv.isArray(p.bibbadge) && p.bibbadge.length > 0)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')
+	let note_str = (dv.isArray(p.bibnote) && p.bibnote.length > 0)?(p.bibnote.join('\n')):('')
+	let comment_str = (dv.isArray(p.bibcomment) && p.bibcomment.length > 0)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')
+
+	if (badge_str + note_str + comment_str != '') {
+		return `class ${p.bibid} {\n${badge_str}${note_str}\n${comment_str}}`
+	} else {
+		return `class ${p.bibid}`
+	}
+}
+
 for (let p of papers) {
-	commands.push(`class ${p.bibid} {\n${dv.isArray(p.bibbadge)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')}${dv.isArray(p.bibnote)?(p.bibnote.join('\n')):('')}\n${dv.isArray(p.bibcomment)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')}}`)
+	commands.push(paper_node(p))
 }
 
 // parse paper branches
