@@ -54,6 +54,6 @@ if (papers.length > 0) {
 	dv.header(2, 'Papers 🔬')
 	dv.table(
 		['link', 'title', 'date', 'update'],
-		papers.map(n => [n.file.link, n.title, n.date, (n.update == null)?(null):(n.update.flat())])
+		papers.map(n => [n.file.link, n.bib_title, n.date, (n.update == null)?(null):(n.update.flat())])
 	)
 }

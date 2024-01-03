@@ -23,14 +23,14 @@ let badge2emoji = {
 }
 
 function paper_node(p) {
-	let badge_str = (dv.isArray(p.bibbadge) && p.bibbadge.length > 0)?(p.bibbadge.map(p => badge2emoji[p]).join('')):('')
-	let note_str = (dv.isArray(p.bibnote) && p.bibnote.length > 0)?(p.bibnote.join('\n')):('')
-	let comment_str = (dv.isArray(p.bibcomment) && p.bibcomment.length > 0)?(p.bibcomment.map(p => `*(${p})`).join('\n')):('')
+	let badge_str = (dv.isArray(p.bib_badge) && p.bib_badge.length > 0)?(p.bib_badge.map(p => badge2emoji[p]).join('')):('')
+	let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
+	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
 
 	if (badge_str + note_str + comment_str != '') {
-		return `class ${p.bibid} {\n${badge_str}${note_str}\n${comment_str}}`
+		return `class ${p.bib_id} {\n${badge_str}${note_str}\n${comment_str}}`
 	} else {
-		return `class ${p.bibid}`
+		return `class ${p.bib_id}`
 	}
 }
 
@@ -42,7 +42,7 @@ for (let p of papers) {
 let branches = { papers: [] }
 
 for (let p of papers) {
-	for (let link of p.biblist) {
+	for (let link of p.bib_list) {
 		if (link.path == file.file.path) {
 			if (link.subpath == null) {
 				branches.papers.push(p)
@@ -72,20 +72,20 @@ function draw(name, node, start, mode) {
             if (mode == 'sub') {
                 for (let p of sub_node) {
                     name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${current} -- ${p.bibid}${name_str}`)
-                    current = p.bibid
+                    commands.push(`${current} -- ${p.bib_id}${name_str}`)
+                    current = p.bib_id
                 }
             } else if (mode == 'pre') {
                 for (let p of sub_node) {
                     name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${p.bibid} -- ${current}${name_str}`)
-                    current = p.bibid
+                    commands.push(`${p.bib_id} -- ${current}${name_str}`)
+                    current = p.bib_id
                 }
             } else {
                 for (let p of sub_node.toReversed()) {
                     name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${p.bibid} .. ${current}${name_str}`)
-                    current = p.bibid
+                    commands.push(`${p.bib_id} .. ${current}${name_str}`)
+                    current = p.bib_id
                 }
             }
         } else {
@@ -94,7 +94,7 @@ function draw(name, node, start, mode) {
 
                 for (let p of node.papers) {
                     if (sub_first.year > p.year) {
-                        current = p.bibid
+                        current = p.bib_id
                     }
                 }
             }
@@ -113,18 +113,18 @@ function draw(name, node, start, mode) {
 draw('', branches, 'root', 'sub')
 
 // paper links
-const paper_ids = papers.bibid
+const paper_ids = papers.bib_id
 
 for (let p of papers) {
-    if (dv.isArray(p.biblink)) {
-        for (let l of p.biblink) {
-            let lid = dv.page(l).bibid
+    if (dv.isArray(p.bib_link)) {
+        for (let l of p.bib_link) {
+            let lid = dv.page(l).bib_id
 
             if (paper_ids.includes(lid)) {
                 if (l.subpath != null) {
-                    commands.push(`${p.bibid} .. ${lid}: ${l.subpath}`)
+                    commands.push(`${p.bib_id} .. ${lid}: ${l.subpath}`)
                 } else {
-                    commands.push(`${p.bibid} .. ${lid}`)
+                    commands.push(`${p.bib_id} .. ${lid}`)
                 }
             }
         }
@@ -136,11 +136,11 @@ dv.paragraph(commands.join('\n'))
 // paper list
 dv.header(2, 'Papers')
 
-papers = papers.sort(item => item.bibid, 'asc')
+papers = papers.sort(item => item.bib_id, 'asc')
 
 dv.table(
 	['link', 'title', 'venue'],
-	papers.map(p => [p.file.link, p.title, (p.journal != null)?(p.journal):(p.booktitle)]),
+	papers.map(p => [p.file.link, p.bib_title, (p.bib_journal != null)?(p.bib_journal):(p.bib_booktitle)]),
 )
 
 // bibtex
@@ -149,17 +149,17 @@ dv.header(2, 'BibTex')
 commands = ['```']
 
 for (let p of papers) {
-    commands.push(`@${p.bibtype}{${p.bibid},`)
+    commands.push(`@${p.bib_type}{${p.bib_id},`)
     let flag = false
 
     for (let [key, value] of Object.entries(p)) {
-        if (key == 'bibid') {
+        if (key == 'bib_id') {
             flag = true
             continue
         }
 
-        if (flag == true) {
-            commands.push(`\t${key} = {${value}},`)
+        if (flag == true && key.includes('bib_')) {
+            commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
         }
     }
 

@@ -3,12 +3,12 @@ tags:
   - Paper
 date: <%tp.date.now()%>
 update: []
-biblist: []
-biblink: []
-bibbadge: []
-bibnote: []
-bibcomment: [] 
-bibpdf:
+bib_list: []
+bib_link: []
+bib_badge: []
+bib_note: []
+bib_remark: []
+bib_pdf:
 ---
 
 ```dataviewjs

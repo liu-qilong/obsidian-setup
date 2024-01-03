@@ -14,15 +14,15 @@ if (file.doi != null) {
 // convert bibtex to yaml
 dv.header(2, 'BibTeX to YAML')
 
-function parse_bitex(bibtexData, gen_id = false) {
+function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 
-	// match bibtype, bibid, & fields
+	// match bib_type, bib_id, & fields
 	const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
 	let match = entryRegex.exec(bibtexData)
 
 	let fields = {}
-	fields['bibtype'] = match[1]
-	fields['bibid'] = match[2]
+	fields['bib_type'] = match[1]
+	fields['bib_id'] = match[2]
 	let fields_str = match[3]
 
 	// parse bibtex fields
@@ -67,12 +67,12 @@ function parse_bitex(bibtexData, gen_id = false) {
 		}
 	}
 	
-	keys.map((key, idx) => { fields[key] = values[idx] })
+	keys.map((key, idx) => { fields[`bib_${key.toLowerCase()}`] = values[idx] })
 
-	// if gen_id is true, generate bibid in the format of SurnameNameYear
+	// if gen_id is true, generate bib_id in the format of SurnameNameYear
 	if (gen_id === true) {
-		if (keys.includes('author')) {
-			let authorIndex = keys.indexOf('author')
+		if (keys.includes('bib_author')) {
+			let authorIndex = keys.indexOf('bib_author')
 			let authors = values[authorIndex].split(' and ')
 			let firstAuthor = authors[0]
 			let firstName, lastName
@@ -85,13 +85,18 @@ function parse_bitex(bibtexData, gen_id = false) {
 				firstName = nameParts.join(' ')
 			}
 
-			fields['bibid'] = `${lastName}${firstName}${fields['year']}`.replace(/[^a-zA-Z0-9]/g, '')
-			console.log(fields['bibid'])
+			fields['bib_id'] = `${lastName}${firstName}${fields['year']}`.replace(/[^a-zA-Z0-9]/g, '')
+			console.log(fields['bib_id'])
 		}
 	}
 
+	// if lower_case_type is true, convert bib_type to lower case
+	if (lower_case_type === true) {
+		fields['bib_type'] = fields['bib_type'].toLowerCase()
+	}
+
 	// temp
-	const fieldsToDelete = ['groups', 'comment', 'priority', 'file', 'progress'];
+	const fieldsToDelete = ['bib_groups', 'bib_comment', 'bib_priority', 'bib_file', 'bib_progress'];
 	fieldsToDelete.forEach(field => {
 		if (fields.hasOwnProperty(field)) {
 			delete fields[field];
@@ -105,8 +110,8 @@ if (file.bibtex != null) {
 	const bibtex = file.bibtex
 	const bibjson = parse_bitex(bibtex, gen_id = true)
 
-	// generated bibid
-	dv.paragraph(`Generated entry ID:\n\`\`\`\n${bibjson['bibid']}\n\`\`\``)
+	// generated bib_id
+	dv.paragraph(`Generated entry ID:\n\`\`\`\n${bibjson['bib_id']}\n\`\`\``)
 
 	// yaml
 	dv.paragraph('The YAML format entry information:')
