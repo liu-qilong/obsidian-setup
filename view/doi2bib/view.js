@@ -16,13 +16,13 @@ dv.header(2, 'BibTeX to YAML')
 
 function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 
-	// match bib_type, bib_id, & fields
+	// match type, id, & fields
 	const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
 	let match = entryRegex.exec(bibtexData)
 
 	let fields = {}
-	fields['bib_type'] = match[1]
-	fields['bib_id'] = match[2]
+	fields['type'] = match[1]
+	fields['id'] = match[2]
 	let fields_str = match[3]
 
 	// parse bibtex fields
@@ -59,7 +59,7 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 			if ((max_layer > 0 && stack.length === 0) || (max_layer === 0 && (char === ',' || char === '}' || idx === fields_str.length - 1))) {
 				// when the field has {} pairs, complete parsing when the '{' stack is empty
 				// when the field has no {} layers, complete parsing when the ',' or '}' is encountered or the string ends
-				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(": ", "{:}"))
+				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(": ", "{:} "))
 				store = ''
 				max_layer = 0
 				mode = 'key'
@@ -67,12 +67,13 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 		}
 	}
 	
-	keys.map((key, idx) => { fields[`bib_${key.toLowerCase()}`] = values[idx] })
+	keys.map((key, idx) => { fields[key.toLowerCase()] = values[idx] })
+
 
 	// if gen_id is true, generate bib_id in the format of SurnameNameYear
 	if (gen_id === true) {
-		if (keys.includes('bib_author')) {
-			let authorIndex = keys.indexOf('bib_author')
+		if (keys.includes('author')) {
+			let authorIndex = keys.indexOf('author')
 			let authors = values[authorIndex].split(' and ')
 			let firstAuthor = authors[0]
 			let firstName, lastName
@@ -85,18 +86,17 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 				firstName = nameParts.join(' ')
 			}
 
-			fields['bib_id'] = `${lastName}${firstName}${fields['year']}`.replace(/[^a-zA-Z0-9]/g, '')
-			console.log(fields['bib_id'])
+			fields['id'] = `${lastName}${firstName}${fields['year']}`.replace(/[^a-zA-Z0-9]/g, '')
 		}
 	}
 
 	// if lower_case_type is true, convert bib_type to lower case
 	if (lower_case_type === true) {
-		fields['bib_type'] = fields['bib_type'].toLowerCase()
+		fields['type'] = fields['type'].toLowerCase()
 	}
 
 	// temp
-	const fieldsToDelete = ['bib_groups', 'bib_comment', 'bib_priority', 'bib_file', 'bib_progress'];
+	const fieldsToDelete = ['groups', 'comment', 'priority', 'file', 'progress'];
 	fieldsToDelete.forEach(field => {
 		if (fields.hasOwnProperty(field)) {
 			delete fields[field];
@@ -111,14 +111,14 @@ if (file.bibtex != null) {
 	const bibjson = parse_bitex(bibtex, gen_id = true)
 
 	// generated bib_id
-	dv.paragraph(`Generated entry ID:\n\`\`\`\n${bibjson['bib_id']}\n\`\`\``)
+	dv.paragraph(`Generated entry ID:\n\`\`\`\n${bibjson['id']}\n\`\`\``)
 
 	// yaml
 	dv.paragraph('The YAML format entry information:')
 	let commands = ['```']
 
 	for (let [key, value] of Object.entries(bibjson)) {
-		commands.push(`${key}: ${value}`)
+		commands.push(`bib_${key}: ${value}`)
 	}
 
 	commands.push('```')
