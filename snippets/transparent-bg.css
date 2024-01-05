@@ -1,3 +1,5 @@
+/* this snippet should be used with Settings > Appearance > Advanced > Translucent window */ 
+
 /* set background of elements transparent */
 .workspace-leaf,
 .workspace-tab-header-container {
@@ -16,5 +18,4 @@
 
 .is-focused .workspace-leaf.mod-active .view-header {
   background: transparent;
-  
 }
