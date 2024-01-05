@@ -1,0 +1,5 @@
+/* auto-fit mermaid diagrams to container width */
+.markdown-preview-view .mermaid {
+    display: flex !important;
+    justify-content: center;
+}

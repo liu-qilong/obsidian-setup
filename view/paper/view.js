@@ -34,6 +34,7 @@ let badge2emoji = {
     'skimmed': '🪫',
     'read': '🔋',
     'seminal': '💡',
+	'important': '📌',
 }
 
 function paper_node(p) {

@@ -1,0 +1,5 @@
+.external-link,
+.internal-link {
+    --link-external-decoration: none;
+    --link-decoration: none;
+}

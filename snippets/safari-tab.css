@@ -1,0 +1,36 @@
+/* refine tab bar margin */
+.workspace .mod-root .workspace-tab-header-container-inner {
+    margin: 3px 0px;
+    width: 100%;
+    justify-content: center;
+}
+
+/* rounded tab */
+.workspace .mod-root .workspace-tab-header {
+    border-radius: 5px;
+    margin: 2px;
+    padding: 2px;
+    background-color: var(--color-base-35);
+    max-width: 20%;
+}
+  
+.workspace .mod-root .workspace-tab-header::before {
+    display: none;
+}
+
+.workspace .mod-root .workspace-tab-header::after {
+    display: none;
+}
+
+/* remove separation line */
+.workspace .mod-root .workspace-tab-header-inner::after {
+    display: none;
+}
+
+/* active tab */
+.workspace .mod-root .workspace-tab-header.is-active,
+.workspace .mod-root .workspace-tab-header.is-active:hover {
+    box-shadow: none;
+    min-width: 30%;
+    max-width: 40%;
+}
