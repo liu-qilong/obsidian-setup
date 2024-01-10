@@ -59,7 +59,7 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 			if ((max_layer > 0 && stack.length === 0) || (max_layer === 0 && (char === ',' || char === '}' || idx === fields_str.length - 1))) {
 				// when the field has {} pairs, complete parsing when the '{' stack is empty
 				// when the field has no {} layers, complete parsing when the ',' or '}' is encountered or the string ends
-				values.push(store.replace(head_trim, '').replace(trail_trim, '').replace(": ", "{:} "))
+				values.push(store.replace(head_trim, '').replace(trail_trim, '').replaceAll(": ", "{:} "))
 				store = ''
 				max_layer = 0
 				mode = 'key'
