@@ -1,0 +1,5 @@
+@media print {
+    .markdown-preview-view img {
+        box-shadow: none;
+    }
+}

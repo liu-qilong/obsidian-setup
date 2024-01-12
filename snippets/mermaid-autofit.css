@@ -1,5 +1,9 @@
 /* auto-fit mermaid diagrams to container width */
 .markdown-preview-view .mermaid {
-    display: flex !important;
+    display: flex;
     justify-content: center;
+}
+
+.markdown-preview-view .mermaid svg {
+    height: auto;
 }
