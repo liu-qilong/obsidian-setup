@@ -35,6 +35,7 @@ let badge2emoji = {
     'read': '🔋',
     'seminal': '💡',
 	'important': '📌',
+	'work-well': '👍',
 }
 
 function paper_node(p) {
@@ -43,7 +44,7 @@ function paper_node(p) {
 	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
 
 	if (badge_str + note_str + comment_str != '') {
-		return `class ${p.bib_id} {\n${badge_str}${note_str}\n${comment_str}}`
+		return `class ${p.bib_id} {\n${badge_str} ${note_str}\n${comment_str}}`
 	} else {
 		return `class ${p.bib_id}`
 	}

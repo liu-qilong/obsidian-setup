@@ -15,7 +15,6 @@ if (file.doi != null) {
 dv.header(2, 'BibTeX to YAML')
 
 function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
-
 	// match type, id, & fields
 	const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
 	let match = entryRegex.exec(bibtexData)
@@ -32,14 +31,12 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 	let stack = []
 	let keys = []
 	let values = []
-	const head_trim = /^[,={} ]+/
-	const trail_trim = /[,={} ]+$/
 
 	for (let [idx, char] of [...fields_str].entries()) {
 		if (mode === 'key') {
 			// parsing the key of a field
 			if (char === '=') {
-				keys.push(store.replace(head_trim, '').replace(trail_trim, ''))
+				keys.push(store.replace(/^[, ]+/, '').replace(/[, ]+$/, ''))
 				store = ''
 				mode = 'value'
 			} else {
@@ -52,14 +49,30 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 			if (char === '{') {
 				stack.push(char)
 				max_layer += 1
+
+				// if the value has {} pairs, remove the outmost {
+				if (max_layer === 1) {
+					store = ''
+				}
 			} else if (char === '}') {
 				stack.pop()
+				
+				// if the value has {} pairs, discard the outmost }
+				if (stack.length === 0) {
+					store = store.slice(0, -1)
+				}
 			}
 
 			if ((max_layer > 0 && stack.length === 0) || (max_layer === 0 && (char === ',' || char === '}' || idx === fields_str.length - 1))) {
 				// when the field has {} pairs, complete parsing when the '{' stack is empty
 				// when the field has no {} layers, complete parsing when the ',' or '}' is encountered or the string ends
-				values.push(store.replace(head_trim, '').replace(trail_trim, '').replaceAll(": ", "{:} "))
+				value = store.replace(/^[ ]+/, '').replace(/[, ]+$/, '').replaceAll(": ", "{:} ")
+
+				if (value[0] === '{' || value[-1] === '}') {
+					value = `"${value}"`
+				}
+
+				values.push(value)
 				store = ''
 				max_layer = 0
 				mode = 'key'
