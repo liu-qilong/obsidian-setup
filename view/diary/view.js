@@ -30,7 +30,7 @@ if (notes.length > 0) {
 	dv.header(2, 'Notes 📖')
 	dv.table(
 		['link', 'date', 'update'],
-		notes.map(n => [n.file.link, n.date, (n.update == null)?(null):(n.update.flat())])
+		notes.map(n => [n.file.link, n.date, (dv.isArray(n.update))?(n.update[n.update.length - 1]):(null)])
 	)
 }
 

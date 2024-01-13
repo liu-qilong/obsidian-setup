@@ -36,7 +36,7 @@ if (notes.length > 0) {
     dv.header(2, 'Notes')
     dv.table(
         ['link', 'date', 'update'],
-        notes.map(p => [p.file.link, p.date, (p.update == null)?(null):(p.update.flat())])
+        notes.map(p => [p.file.link, p.date, (dv.isArray(p.update))?(p.update[p.update.length - 1]):(null)])
     )
 }
 
@@ -47,7 +47,7 @@ if (lists.length > 0) {
     dv.header(2, 'Paper lists')
     dv.table(
         ['link', 'date', 'update'],
-        lists.map(p => [p.file.link, p.date, (p.update == null)?(null):(p.update.flat())])
+        lists.map(p => [p.file.link, p.date, (dv.isArray(p.update))?(p.update[p.update.length - 1]):(null)])
     )
 }
 
