@@ -67,7 +67,7 @@ if (dv.isArray(file.bib_link)) {
 
 	// draw linked papers
 	for (let l of paper_links) {
-		commands.push(paper_node(l))
+		commands.push(paper_node(dv.page(l)))
 
 		if (l.subpath != null) {
 			commands.push(`${file.bib_id} .. ${dv.page(l).bib_id}: ${l.subpath}`)
