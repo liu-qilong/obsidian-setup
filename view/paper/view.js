@@ -58,12 +58,12 @@ if (dv.isArray(file.bib_link)) {
 	let paper_links = []
 	paper_links.push(...file.bib_link)
 
-	for (let p of dv.pages("#Paper and [[]]")) {
-		for (let l of p.bib_link) {
-			l.path = p.file.path
-			paper_links.push(l)
-		}
-	}
+	// for (let p of dv.pages("#Paper and [[]]")) {
+	// 	for (let l of p.bib_link) {
+	// 		l.path = p.file.path
+	// 		paper_links.push(l)
+	// 	}
+	// }
 
 	// draw linked papers
 	for (let l of paper_links) {

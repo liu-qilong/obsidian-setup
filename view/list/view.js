@@ -115,23 +115,23 @@ function draw(name, node, start, mode) {
 draw('', branches, 'root', 'sub')
 
 // paper links
-const paper_ids = papers.bib_id
+// const paper_ids = papers.bib_id
 
-for (let p of papers) {
-    if (dv.isArray(p.bib_link)) {
-        for (let l of p.bib_link) {
-            let lid = dv.page(l).bib_id
+// for (let p of papers) {
+//     if (dv.isArray(p.bib_link)) {
+//         for (let l of p.bib_link) {
+//             let lid = dv.page(l).bib_id
 
-            if (paper_ids.includes(lid)) {
-                if (l.subpath != null) {
-                    commands.push(`${p.bib_id} .. ${lid}: ${l.subpath}`)
-                } else {
-                    commands.push(`${p.bib_id} .. ${lid}`)
-                }
-            }
-        }
-    }
-}
+//             if (paper_ids.includes(lid)) {
+//                 if (l.subpath != null) {
+//                     commands.push(`${p.bib_id} .. ${lid}: ${l.subpath}`)
+//                 } else {
+//                     commands.push(`${p.bib_id} .. ${lid}`)
+//                 }
+//             }
+//         }
+//     }
+// }
 
 dv.paragraph(commands.join('\n'))
 
