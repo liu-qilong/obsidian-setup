@@ -2,7 +2,7 @@ let current_tag = dv.current().aliases[0]
 let current_name = dv.current().file.name
 
 // projects
-let projects = dv.pages(`#Project and ${current_tag}`)
+let projects = dv.pages(`#Type/Project and ${current_tag}`)
 
 if (projects.length > 0) {
     dv.header(2, 'Projects')
@@ -13,7 +13,7 @@ if (projects.length > 0) {
 }
 
 // notes
-let notes = dv.pages(`#Note and (${current_tag} or [[]])`).sort(n => n.date, 'desc')
+let notes = dv.pages(`#Type/Note and (${current_tag} or [[]])`).sort(n => n.date, 'desc')
 
 if (notes.length > 0) {
     dv.header(2, 'Notes')
@@ -23,19 +23,8 @@ if (notes.length > 0) {
     )
 }
 
-// chats
-let chats = dv.pages(`#Chat and (${current_tag} or [[]])`).sort(n => n.date, 'desc')
-
-if (chats.length > 0) {
-    dv.header(2, 'Chats')
-    dv.table(
-        ['link', 'date', 'update'],
-        chats.map(p => [p.file.link, p.date, (dv.isArray(p.update))?(p.update[p.update.length - 1]):(null)])
-    )
-}
-
 // thoughts
-let thoughts = dv.pages(`#Diary and (${current_tag} or [[]])`).file.lists
+let thoughts = dv.pages(`#Type/Diary and (${current_tag} or [[]])`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
     .sort(ls => dv.date(ls.link), 'desc')
 

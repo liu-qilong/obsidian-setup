@@ -1,6 +1,6 @@
 ---
 tags:
-  - Paper
+  - Type/Paper
 date: <%tp.date.now()%>
 update: []
 bib_list: []

@@ -1,8 +1,8 @@
 ---
 aliases:
-  - "#Odyssey/People/<tag>"
+  - "#People/<tag>"
 tags:
-  - People
+  - Type/People
 email: 
 phone: 
 address: 

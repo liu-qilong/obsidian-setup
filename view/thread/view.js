@@ -13,7 +13,7 @@ let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
 commands.push(`class root {\n${file.file.name}\n}`)
 
 // paper class
-let papers = dv.pages(`#Paper and [[]]`)
+let papers = dv.pages(`#Type/Paper and [[]]`)
 	.sort(p => p.bib_year, 'asc')
 
 let badge2emoji = {

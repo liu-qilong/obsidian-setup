@@ -1,8 +1,8 @@
 ---
 alias: 
-  - "#Odyssey/Institute/<tag>"
+  - "#Institute/<tag>"
 tags:
-  - Institute
+  - Type/Institute
 ---
 
 ## Todo

@@ -1,8 +1,8 @@
 ---
 aliases:
-  - "#Kolmo/<name>"
+  - "#Project/<name>"
 tags:
-  - Project
+  - Type/Project
 startProject: 
 completeProject: 
 ---

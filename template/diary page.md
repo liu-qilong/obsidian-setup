@@ -1,6 +1,7 @@
 ---
 date: {{date:YYYY-MM-DD}}
-tags: Diary
+tags:
+  - Type/Diary
 ---
 
 # _{{date:dddd, MMMM D, YYYY}}_

@@ -11,7 +11,7 @@ if (tasks.length > 0) {
 }
 
 // notes
-let notes = dv.pages("#Note")
+let notes = dv.pages("#Type/Note")
 	.where(n => {
 		var dates = [n.date]
 		
@@ -35,7 +35,7 @@ if (notes.length > 0) {
 }
 
 // Papers
-let papers = dv.pages("#Paper")
+let papers = dv.pages("#Type/Paper")
 	.where(n => {
 		var dates = [n.date]
 		
