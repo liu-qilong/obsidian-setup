@@ -10,5 +10,5 @@ birthday:
 ---
 
 ```dataviewjs
-await dv.view('utils/view/people')
+await dv.view('utils/view/taglens')
 ```

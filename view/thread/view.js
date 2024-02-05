@@ -1,6 +1,6 @@
 const current_file = dv.current()
-const current_tag = current_file.aliases[0].replace('#', '')
 const current_name = current_file.file.name
+const current_tag = current_file.aliases[0].replace('#', '')
 
 let papers = dv.pages(`#Type/Paper and #${current_tag}`).sort(p => p.bib_year, 'asc')
 

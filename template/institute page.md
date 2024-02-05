@@ -8,5 +8,5 @@ tags:
 ## Todo
 
 ```dataviewjs
-await dv.view('utils/view/institute')
+await dv.view('utils/view/taglens')
 ```

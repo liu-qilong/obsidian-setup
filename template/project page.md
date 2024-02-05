@@ -10,5 +10,5 @@ completeProject:
 ## Todo
 
 ```dataviewjs
-await dv.view('utils/view/project')
+await dv.view('utils/view/taglens')
 ```
