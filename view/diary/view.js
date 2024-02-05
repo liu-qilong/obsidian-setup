@@ -10,50 +10,39 @@ if (tasks.length > 0) {
 	dv.taskList(tasks)
 }
 
-// notes
-let notes = dv.pages("#Type/Note")
-	.where(n => {
-		var dates = [n.date]
-		
-		if (n.update != null) {
-			dates.push(...n.update.flat())
-		}
-		
-		for (let date of dates) {
-			if (dv.equal(date, today)) {
-				return true
-			}
-		}
-	})
-
-if (notes.length > 0) {
-	dv.header(2, 'Notes 📖')
-	dv.table(
-		['link', 'date', 'update'],
-		notes.map(n => [n.file.link, n.date, (dv.isArray(n.update))?(n.update[n.update.length - 1]):(null)])
-	)
+// pages created/updated today separated by type
+let tag_dict = {
+    'Type/Note': ['date', 'update'],
+    'Type/Paper': ['date', 'update'],
 }
 
-// Papers
-let papers = dv.pages("#Type/Paper")
-	.where(n => {
-		var dates = [n.date]
-		
-		if (n.update != null) {
-			dates.push(...n.update.flat())
-		}
-		
-		for (let date of dates) {
-			if (dv.equal(date, today)) {
-				return true
+for (let [tag_name, tag_vars] of Object.entries(tag_dict)) {
+    let pages = dv.pages(`#${tag_name}`)
+		.where(n => {
+			var dates = [n.date].concat(n.update)
+			
+			for (let date of dates) {
+				if (dv.equal(date, today)) {
+					return true
+				}
 			}
-		}
-	})
+		})
 
-if (papers.length > 0) {
-	dv.header(2, 'Papers 🔬')
-	dv.table(
-		['link', 'title', 'date', 'update'],
-		papers.map(p => [p.file.link, p.bib_title, p.date, (dv.isArray(p.update))?(p.update[p.update.length - 1]):(null)])
-	)
+    if (pages.length > 0) {
+        dv.header(2, `Related ${tag_name.split('/')[1]}`)
+        dv.table(
+            ['link'].concat(tag_vars),
+            pages.map(p => [p.file.link].concat(tag_vars.map(v => {
+                if (v === 'update') {
+                    if (dv.isArray(p[v])) {
+                        return p[v][p[v].length - 1]
+                    } else {
+                        return null
+                    }
+                } else {
+                    return p[v]
+                }
+            }))),
+        )
+    }
 }
