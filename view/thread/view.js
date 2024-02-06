@@ -110,8 +110,12 @@ function draw_branch(name, node, start, mode) {
                 // if current branch and sub branch both have items
                 // adjust the current drawing item to the last item in current branch
                 // that are published before the first item in sub branch
-                // if none, then set as the first item in current branch
-                current = node.__items__[0].bib_id
+                // if none, then set as the first item in current branch when drawing sub-branches
+                // while leave the current drawing item unchanged when drawing root branches
+                if (start != 'List') {
+                    current = node.__items__[0].bib_id
+                }
+
                 const sub_first = sub_node.__items__[0]
 
                 for (let p of node.__items__) {
