@@ -13,7 +13,7 @@ const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000'
 
 let commands = []
 commands.push(`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`)
-commands.push(`class root {\n${current_name}\n#${current_tag}\n}`)
+commands.push(`class List {\n${current_name}\n#${current_tag}\n}`)
 
 // parse paper branches
 function push_nested_dict(dict, index, value) {
@@ -137,13 +137,13 @@ function draw_branch(name, node, start, mode) {
 	}
 }
 
-draw_branch('', branches, 'root', 'downward')
+draw_branch('', branches, 'List', 'downward')
 dv.paragraph(commands.join('\n'))
 
 // paper list
 dv.header(2, 'Papers')
 
-papers = papers.sort(item => item.bib_id, 'asc')
+papers = papers.sort(item => item.bib_year, 'asc')
 
 dv.table(
 	['link', 'title', 'venue'],

@@ -3,8 +3,6 @@ aliases:
   - "#Thread/<tag>"
 tags:
   - Type/Thread
-date: <%tp.date.now()%>
-update: []
 ---
 
 ```dataviewjs

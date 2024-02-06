@@ -3,22 +3,42 @@ let current_tag = dv.current().aliases[0].replace('#', '')
 
 // tagged/linked pages separated by type
 let tag_dict = {
-    'Type/Project': ['startProject', 'endProject'],
-    'Type/Topic': [],
-    'Type/Thread': ['date', 'update'],
-    'Type/Note': ['date', 'update'],
-    'Type/People': ['address', 'email'],
-    'Type/Institute': ['address', 'email'],
+    'Type/Project': {
+        'show_name': 'projects 🏗️',
+        'show_vars': ['project_start', 'project_complete'],
+    },
+    'Type/Topic': {
+        'show_name': 'topics 📚',
+        'show_vars': [],
+    },
+    'Type/Thread': {
+        'show_name': 'threads 🗞️',
+        'show_vars': [],
+    },
+    'Type/Note': {
+        'show_name': 'notes ✍️',
+        'show_vars': ['date', 'update'],
+    },
+    'Type/People': {
+        'show_name': 'people 📞',
+        'show_vars': ['address', 'email'],
+    },
+    'Type/Institute': {
+        'show_name': 'institutes 🏛️',
+        'show_vars': ['address', 'email'],
+    },
 }
 
-for (let [tag_name, tag_vars] of Object.entries(tag_dict)) {
+for (let tag_name of Object.keys(tag_dict)) {
+    let show_name = tag_dict[tag_name]['show_name']
+    let show_vars = tag_dict[tag_name]['show_vars']
     let pages = dv.pages(`#${tag_name} and (#${current_tag} or [[]])`)
 
     if (pages.length > 0) {
-        dv.header(2, `Related ${tag_name.split('/')[1]}`)
+        dv.header(2, `Related ${show_name}`)
         dv.table(
-            ['link'].concat(tag_vars),
-            pages.map(p => [p.file.link].concat(tag_vars.map(v => {
+            ['link'].concat(show_vars),
+            pages.map(p => [p.file.link].concat(show_vars.map(v => {
                 if (v === 'update') {
                     if (dv.isArray(p[v])) {
                         return p[v][p[v].length - 1]
@@ -34,12 +54,12 @@ for (let [tag_name, tag_vars] of Object.entries(tag_dict)) {
 }
 
 // tagged/linked mentions in notes
-let thoughts = dv.pages(`#Type/Diary and (#${current_tag} or [[]])`).file.lists
+let thoughts = dv.pages(`#${current_tag} or [[]]`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
     .sort(ls => dv.date(ls.link), 'desc')
     
 if (thoughts.length > 0) {
-    dv.header(2, 'Mentions')
+    dv.header(2, 'Mentions in lists 💡')
     dv.table(
         ['link', 'text'],
         thoughts.map(ls => {
