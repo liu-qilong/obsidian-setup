@@ -3,7 +3,6 @@ tags:
   - Type/Paper
 date: <%tp.date.now()%>
 update: []
-bib_list: []
 bib_link: []
 bib_badge: []
 bib_note: []

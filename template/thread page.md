@@ -1,5 +1,5 @@
 ---
-alias: 
+aliases: 
   - "#Thread/<tag>"
 tags:
   - Type/Thread

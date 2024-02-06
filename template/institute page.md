@@ -1,5 +1,5 @@
 ---
-alias: 
+aliases: 
   - "#Institute/<tag>"
 tags:
   - Type/Institute
