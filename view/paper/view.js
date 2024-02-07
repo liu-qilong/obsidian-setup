@@ -1,27 +1,6 @@
 const current_file = dv.current()
 const current_name = dv.current().file.name
 
-// bibtex
-dv.header(2, 'BibTex')
-
-let commands = ['```', `@${current_file.bib_type}{${current_file.bib_id},`]
-let flag = false
-
-for (let [key, value] of Object.entries(current_file)) {
-	if (key == 'bib_id') {
-		flag = true
-		continue
-	}
-
-	if (flag == true && key.includes('bib_')) {
-		commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
-	}
-}
-
-commands.push('}', '```')
-
-dv.paragraph(commands.join('\n'))
-
 // thread view
 dv.header(2, 'Thread')
 
@@ -29,7 +8,7 @@ const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000'
 // nodeBorder: class box segment line color
 // mainBkg: background color of the links' text box
 
-commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
+let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
 
 function paper_node(p, commands) {
 	let badge2emoji = {
@@ -95,9 +74,11 @@ let thread_id_dict = {}
 let thread_ls = dv.pages('#Type/Thread')
 
 function thread_node(tag, source_tag, commands) {
-	let thread_title = `#${tag}`
 	let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
 	thread_id_dict[tag] = thread_id
+
+	// search for thread title
+	let thread_title = ''
 
 	for (let thread of thread_ls) {
 		if (thread.file.aliases[0] === `#${tag}`) {
@@ -106,8 +87,10 @@ function thread_node(tag, source_tag, commands) {
 		}
 	}
 
+	// draw thread node
+	commands.push(`class ${thread_id} {\n${(thread_title != '')?(`${thread_title}\n`):('')}#${tag}\n}`)
+
 	if (source_tag != '') {
-		commands.push(`class ${thread_id} {\n${thread_title}\n}`)
 		let branch_tag = tag.replace(`${source_tag}/`, '')
 
 		if (branch_tag.startsWith('pre-')) {
@@ -115,8 +98,6 @@ function thread_node(tag, source_tag, commands) {
 		} else {
 			commands.push(`${thread_id_dict[source_tag]} -- ${thread_id}: ${branch_tag}`)
 		}
-	} else {
-		commands.push(`class ${thread_id} {\n${thread_title}\n#${tag}\n}`)
 	}
 }
 
@@ -138,14 +119,37 @@ function draw_threads(tag, node, source_tag) {
 	}
 }
 
-draw_threads('', threads, '')
+if (current_file.tags.length > 0) {
+	draw_threads('', threads, '')
+}
 
 // draw links to threads
 for (let tag of current_file.tags) {
 	if (tag.split('/')[0] === 'Thread') {
-		commands.push(`${thread_id_dict[tag]} .. ${current_name}`)
+		commands.push(`${thread_id_dict[tag]} .. ${current_file.bib_id}`)
 	}
 }
 
 commands.push('```')
+dv.paragraph(commands.join('\n'))
+
+// bibtex
+dv.header(2, 'BibTex')
+
+commands = ['```', `@${current_file.bib_type}{${current_file.bib_id},`]
+let flag = false
+
+for (let [key, value] of Object.entries(current_file)) {
+	if (key == 'bib_id') {
+		flag = true
+		continue
+	}
+
+	if (flag == true && key.includes('bib_')) {
+		commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
+	}
+}
+
+commands.push('}', '```')
+
 dv.paragraph(commands.join('\n'))
