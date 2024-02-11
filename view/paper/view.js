@@ -1,6 +1,12 @@
 const current_file = dv.current()
 const current_name = dv.current().file.name
 
+// check consistency between bib_id and file name
+if (current_file.bib_id != current_name) {
+	dv.header(2, '==Warning==')
+	dv.paragraph(`bib_id \`${current_file.bib_id}\` is different from file name \`${current_name}\`.`)
+}
+
 // thread view
 dv.header(2, 'Thread')
 
@@ -17,6 +23,7 @@ function paper_node(p, commands) {
 		'seminal': '💡',
 		'important': '📌',
 		'work-well': '👍',
+		'insightful': '🧠',
 	}
 
 	let badge_str = (dv.isArray(p.bib_badge) && p.bib_badge.length > 0)?(p.bib_badge.map(p => badge2emoji[p]).join('')):('')
@@ -119,7 +126,7 @@ function draw_threads(tag, node, source_tag) {
 	}
 }
 
-if (current_file.tags.length > 0) {
+if (Object.keys(threads).length > 0) {
 	draw_threads('', threads, '')
 }
 

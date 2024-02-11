@@ -56,6 +56,7 @@ function draw_paper(p, id_dict, commands) {
         'seminal': '💡',
         'important': '📌',
         'work-well': '👍',
+        'insightful': '🧠',
     }
     
 	let badge_str = (dv.isArray(p.bib_badge) && p.bib_badge.length > 0)?(p.bib_badge.map(p => badge2emoji[p]).join('')):('')
