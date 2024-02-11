@@ -42,16 +42,33 @@ paper_node(current_file, commands)
 
 // draw linked papers
 if (dv.isArray(current_file.bib_link)) {
-	let paper_links = []
-	paper_links.push(...current_file.bib_link)
-
-	for (let l of paper_links) {
+	for (let l of current_file.bib_link) {
 		paper_node(dv.page(l), commands)
 
 		if (l.subpath != null) {
-			commands.push(`${current_file.bib_id} .. ${dv.page(l).bib_id}: ${l.subpath}`)
+			commands.push(`${current_file.bib_id} <.. ${dv.page(l).bib_id}: ${l.subpath}`)
 		} else {
-			commands.push(`${current_file.bib_id} .. ${dv.page(l).bib_id}`)
+			commands.push(`${current_file.bib_id} <.. ${dv.page(l).bib_id}`)
+		}
+	}
+}
+
+// draw backward linked papers
+for (p of dv.pages('#Type/Paper and [[]]')) {
+	// search all inward linked papers
+	if (dv.isArray(p.bib_link)) {
+		for (let l of p.bib_link) {
+			// go through these papers bib_link
+			if (dv.page(l).bib_id === current_file.bib_id) {
+				// find  the entries that link to the current paper and draw paper links 
+				paper_node(p, commands)
+		
+				if (l.subpath != null) {
+					commands.push(`${current_file.bib_id} ..> ${p.bib_id}: ${l.subpath}`)
+				} else {
+					commands.push(`${current_file.bib_id} ..> ${p.bib_id}`)
+				}
+			}
 		}
 	}
 }
