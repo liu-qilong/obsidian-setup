@@ -5,7 +5,8 @@ const current_tag = current_file.aliases[0].replace('#', '')
 let papers = dv.pages(`#Type/Paper and #${current_tag}`).sort(p => p.bib_year, 'asc')
 
 // flow view
-dv.header(2, 'Thread')
+// with statistics
+dv.header(2, `Thread [total::${papers.length}] [skimmed::${papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
 const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
 // nodeBorder: class box segment line color
