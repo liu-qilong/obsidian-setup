@@ -4,8 +4,12 @@ let today = current_file.date
 // time statistics
 // extract time values
 function timestr2hour(time_str) {
-	const [hours, minutes] = time_str.split(':')
-	return parseInt(hours) + parseInt(minutes) / 60
+	try {
+		const [hours, minutes] = time_str.split(':')
+		return parseInt(hours) + parseInt(minutes) / 60
+	} catch {
+		return 0
+	}
 }
 
 let time_dict = {}

@@ -1,4 +1,5 @@
 ---
+aliases: []
 tags:
   - Type/Paper
 date: <%tp.date.now()%>
