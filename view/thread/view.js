@@ -95,7 +95,7 @@ function draw_branch(name, node, start, mode) {
                 for (let p of sub_node) {
                     bib_id = draw_paper(p, id_dict, commands)
                     name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${current} -- ${bib_id}${name_str}`)
+                    commands.push(`${current} --> ${bib_id}${name_str}`)
                     current = bib_id
                 }
             } else if (mode == 'upward') {
@@ -103,7 +103,7 @@ function draw_branch(name, node, start, mode) {
                 for (let p of sub_node.toReversed()) {
                     let bib_id = draw_paper(p, id_dict, commands)
                     let name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${bib_id} -- ${current}${name_str}`)
+                    commands.push(`${bib_id} <-- ${current}${name_str}`)
                     current = bib_id
                 }
             }

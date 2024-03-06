@@ -1,43 +1,4 @@
-const current_file = dv.current()
-let today = current_file.date
-
-// time statistics
-// extract time values
-function timestr2hour(time_str) {
-	const [hours, minutes] = time_str.split(':')
-	return parseInt(hours) + parseInt(minutes) / 60
-}
-
-let time_dict = {}
-
-for (let [key, value] of Object.entries(current_file)) {
-	if (key.includes('time_')) {
-		time_dict[key.replace('time_', '')] = timestr2hour(value)
-	}
-}
-
-// sum of times array
-let sum = 0
-let arr_sum = Object.values(time_dict).map((value) => {
-	sum += value
-	return sum
-})
-
-if (Object.entries(time_dict).length > 0) {
-	dv.header(2, 'Time statistics 📊')
-	
-	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
-	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
-	commands.push(`title ${Object.keys(time_dict).join('-')}`)
-	commands.push('x-axis [today]')
-	commands.push(`y-axis "Time (h)" 0 --> ${Math.max(...arr_sum)}`)
-
-	for (let value of arr_sum.reverse()) {
-		commands.push(`bar [${value}]`)
-	}
-
-	dv.paragraph(commands.join('\n'))
-}
+let today = dv.current().weekstart
 
 // tasks completed today
 let tasks = dv.pages().file.tasks
