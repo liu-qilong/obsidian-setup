@@ -1,6 +1,6 @@
 ---
-start: 
-duration: 7
+year: {{date:YYYY}}
+week: {{date:W}}
 tags:
   - Type/Week
 ---

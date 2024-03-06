@@ -1,17 +1,32 @@
-
-let startdate = String(dv.current().start).split('T')[0]
-let duration = dv.current().duration
+const current_file = dv.current()
 let diary_folder = 'content/diary'
 
-// parse week dates
+// parse periods dates
 function days_later(date_str, days) {
 	let date = new Date(date_str)
 	date.setDate(date.getDate() + days)
 	return date.toISOString().split('T')[0]
 }
 
+function week_dates(year, week) {
+	let date = new Date(`${year}-01-01`)
+	let day_of_week = date.getDay()
+	let first_mon = new Date(date.setDate(1 + (1 + 7 - day_of_week) % 7))
+	let week_start = new Date(first_mon.setDate(first_mon.getDate() + (week - 1) * 7))
+	
+	return Array.from({ length: 7 }, (_, i) => days_later(week_start, i))
+}
 
-let dates = Array.from({ length: duration }, (_, i) => days_later(startdate, i))
+let dates, duration
+
+if (current_file.tags.includes('Type/Week')) {
+	dates = week_dates(current_file.year, current_file.week)
+	duration = 7
+} else {
+	let startdate = String(dv.current().start).split('T')[0]
+	duration = dv.current().duration
+	dates = Array.from({ length: duration }, (_, i) => days_later(startdate, i))
+}
 
 // time statistics
 // extract time values
@@ -64,7 +79,13 @@ if (Object.entries(time_dict).length > 0) {
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
 	commands.push(`y-axis "Time (h)" 0 --> ${Math.max(...arr_sum.flat())}`)
-	commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
+
+	if (current_file.tags.includes('Type/Week')) {
+		commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
+	} else {
+		commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
+
+	}
 
 	for (let arr of arr_sum.reverse()) {
 		commands.push(`bar [${arr}]`)
