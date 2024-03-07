@@ -63,7 +63,7 @@ let tag_dict = {
     'Type/Paper': {
 		'show_name': 'papers 📃',
 		'match_vars': ['date', 'update'],
-		'show_vars': ['bib_title', 'date', 'update'],
+		'show_vars': ['bib_title', 'bib_cites', 'date', 'update'],
 	},
     'Type/Note': {
 		'show_name': 'notes ✍️',

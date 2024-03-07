@@ -16,22 +16,35 @@ const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000'
 
 let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
 
-function paper_node(p, commands) {
-	let badge2emoji = {
-		'skimmed': '🪫',
-		'read': '🔋',
-		'seminal': '💡',
-		'important': '📌',
-		'work-well': '👍',
-		'insightful': '🧠',
+function to_short_num(num) {
+	if (Math.abs(num) >= 1e9) {
+		return Math.sign(num)*((Math.abs(num)/1e9).toFixed(1)) + 'b'
+	} else if (Math.abs(num) >= 1e6) {
+		return Math.sign(num)*((Math.abs(num)/1e6).toFixed(1)) + 'm'
+	} else if (Math.abs(num) >= 1e3) {
+		return Math.sign(num)*((Math.abs(num)/1e3).toFixed(1)) + 'k'
+	} else {
+		return num
 	}
+}
 
+let badge2emoji = {
+	'skimmed': '🪫',
+	'read': '🔋',
+	'seminal': '💡',
+	'important': '📌',
+	'work-well': '👍',
+	'insightful': '🧠',
+}
+
+function paper_node(p, commands) {
 	let badge_str = (dv.isArray(p.bib_badge) && p.bib_badge.length > 0)?(p.bib_badge.map(p => badge2emoji[p]).join('')):('')
+	let cite_str = (p.bib_cites != null)?(`[${to_short_num(p.bib_cites)}]`):('')
 	let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
 	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
 
-	if (badge_str + note_str + comment_str != '') {
-		commands.push(`class ${p.bib_id} {\n${badge_str} ${note_str}\n${comment_str}}`)
+	if (badge_str + cite_str + note_str + comment_str != '') {
+		commands.push(`class ${p.bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`)
 	} else {
 		commands.push(`class ${p.bib_id}`)
 	}
@@ -177,3 +190,32 @@ for (let [key, value] of Object.entries(current_file)) {
 commands.push('}', '```')
 
 dv.paragraph(commands.join('\n'))
+
+// check updates of citations counts
+async function get_cites(doi) {
+	return fetch(`https://api.crossref.org/works/${doi}`)
+		.then(response => response.json())
+		.then(data => data['message']['is-referenced-by-count'])
+		.catch(error => console.error('Error:', error))
+}
+
+if (Object.keys(current_file).includes('bib_doi')) {
+	dv.header(2, 'Cites')
+
+	let cites = await get_cites(current_file.bib_doi)
+	
+	if (Object.keys(current_file).includes('bib_cites')) {
+		dv.paragraph('Citation counts:')
+		dv.paragraph(`\`\`\`\n${current_file.bib_cites}\n\`\`\``)
+
+		if (cites != current_file.bib_cites) {
+			dv.paragraph('==Citation counts updated:==')
+			dv.paragraph(`\`\`\`\n${cites}\n\`\`\``)
+		}
+	} else {
+		dv.paragraph('==The `bib_cites` properties haven\'t been created:==')
+		dv.paragraph(`\`\`\`\nbib_cites: ${cites}\n\`\`\``)
+	}
+
+	dv.paragraph(`The ciation counts are retrieved from [CrossRef API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/a-non-technical-introduction-to-our-api/) or [Google Scholar](https://scholar.google.com).`)
+}

@@ -50,17 +50,30 @@ for (let p of papers) {
 // draw branches
 let id_dict = []
 
+function to_short_num(num) {
+	if (Math.abs(num) >= 1e9) {
+		return Math.sign(num)*((Math.abs(num)/1e9).toFixed(1)) + 'b'
+	} else if (Math.abs(num) >= 1e6) {
+		return Math.sign(num)*((Math.abs(num)/1e6).toFixed(1)) + 'm'
+	} else if (Math.abs(num) >= 1e3) {
+		return Math.sign(num)*((Math.abs(num)/1e3).toFixed(1)) + 'k'
+	} else {
+		return num
+	}
+}
+
+let badge2emoji = {
+    'skimmed': '🪫',
+    'read': '🔋',
+    'seminal': '💡',
+    'important': '📌',
+    'work-well': '👍',
+    'insightful': '🧠',
+}
+
 function draw_paper(p, id_dict, commands) {
-    let badge2emoji = {
-        'skimmed': '🪫',
-        'read': '🔋',
-        'seminal': '💡',
-        'important': '📌',
-        'work-well': '👍',
-        'insightful': '🧠',
-    }
-    
 	let badge_str = (dv.isArray(p.bib_badge) && p.bib_badge.length > 0)?(p.bib_badge.map(p => badge2emoji[p]).join('')):('')
+    let cite_str = (p.bib_cites != null)?(`[${to_short_num(p.bib_cites)}]`):('')
 	let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
 	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
 
@@ -77,7 +90,7 @@ function draw_paper(p, id_dict, commands) {
 
     // add class definition to mermaid commands
 	if (badge_str + note_str + comment_str != '') {
-		commands.push(`class ${bib_id} {\n${badge_str} ${note_str}\n${comment_str}}`) 
+		commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
 	} else {
 		commands.push(`class ${bib_id}`)
 	}

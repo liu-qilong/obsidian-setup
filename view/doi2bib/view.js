@@ -14,7 +14,7 @@ const bibtex = await get_bibtex(file.doi)
 // convert bibtex to yaml
 dv.header(2, 'BibTeX to YAML')
 
-async function get_citation(doi) {
+async function get_cites(doi) {
 	return fetch(`https://api.crossref.org/works/${doi}`)
 		.then(response => response.json())
 		.then(data => data['message']['is-referenced-by-count'])
@@ -27,12 +27,12 @@ async function parse_bitex(bibtexData, gen_id = false, gen_cite = false, lower_c
 	let match = entryRegex.exec(bibtexData)
 
 	let fields = {}
-	fields['type'] = match[1]
 
 	if (gen_cite === true) {
 		fields['cites'] = 0
 	}
 
+	fields['type'] = match[1]
 	fields['id'] = match[2]
 	let fields_str = match[3]
 
@@ -118,7 +118,7 @@ async function parse_bitex(bibtexData, gen_id = false, gen_cite = false, lower_c
 	// if gen_cite is true, generate citation count
 	if (gen_cite === true) {
 		if (Object.keys(fields).includes('doi')) {
-			fields['cites'] = await get_citation(fields['doi'])
+			fields['cites'] = await get_cites(fields['doi'])
 		}
 	}
 
@@ -133,7 +133,7 @@ async function parse_bitex(bibtexData, gen_id = false, gen_cite = false, lower_c
 		if (fields.hasOwnProperty(field)) {
 			delete fields[field];
 		}
-	});
+	})
 
 	return fields
 }
@@ -153,3 +153,5 @@ for (let [key, value] of Object.entries(bibjson)) {
 
 commands.push('```')
 dv.paragraph(commands.join('\n'))
+
+dv.paragraph(`The BibTeX code are retrieved from [CrossRef API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/a-non-technical-introduction-to-our-api/).`)
