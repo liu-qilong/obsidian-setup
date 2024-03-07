@@ -2,13 +2,7 @@ const file = dv.current()
 
 // get bibtex from doi
 async function get_bibtex(doi) {
-    const url = `https://doi.org/${doi}`
-
-    return fetch(url, {
-        headers: {
-            Accept: "application/x-bibtex",
-        },
-    })
+    return fetch(`https://doi.org/${doi}`, { headers: { Accept: "application/x-bibtex" }})
     .then(response => response.text())
     .catch(error => {
         console.error('Error:', error)
@@ -20,13 +14,25 @@ const bibtex = await get_bibtex(file.doi)
 // convert bibtex to yaml
 dv.header(2, 'BibTeX to YAML')
 
-function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
+async function get_citation(doi) {
+	return fetch(`https://api.crossref.org/works/${doi}`)
+		.then(response => response.json())
+		.then(data => data['message']['is-referenced-by-count'])
+		.catch(error => console.error('Error:', error))
+}
+
+async function parse_bitex(bibtexData, gen_id = false, gen_cite = false, lower_case_type = true) {
 	// match type, id, & fields
 	const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
 	let match = entryRegex.exec(bibtexData)
 
 	let fields = {}
 	fields['type'] = match[1]
+
+	if (gen_cite === true) {
+		fields['cites'] = 0
+	}
+
 	fields['id'] = match[2]
 	let fields_str = match[3]
 
@@ -88,12 +94,12 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 	
 	keys.map((key, idx) => { fields[key.toLowerCase()] = values[idx] })
 
-
 	// if gen_id is true, generate bib_id in the format of SurnameNameYear
 	if (gen_id === true) {
-		if (keys.includes('author')) {
-			let authorIndex = keys.indexOf('author')
-			let authors = values[authorIndex].split(' and ')
+		if (Object.keys(fields).includes('author')) {
+			// let author_idx = Object.keys(fields).indexOf('author')
+			// let authors = values[author_idx].split(' and ')
+			let authors = fields.author.split(' and ')
 			let firstAuthor = authors[0]
 			let firstName, lastName
 
@@ -109,14 +115,21 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 		}
 	}
 
+	// if gen_cite is true, generate citation count
+	if (gen_cite === true) {
+		if (Object.keys(fields).includes('doi')) {
+			fields['cites'] = await get_citation(fields['doi'])
+		}
+	}
+
 	// if lower_case_type is true, convert bib_type to lower case
 	if (lower_case_type === true) {
 		fields['type'] = fields['type'].toLowerCase()
 	}
 
 	// temp
-	const fieldsToDelete = ['groups', 'comment', 'priority', 'file', 'progress'];
-	fieldsToDelete.forEach(field => {
+	const fields_to_delete = ['groups', 'comment', 'priority', 'file', 'progress'];
+	fields_to_delete.forEach(field => {
 		if (fields.hasOwnProperty(field)) {
 			delete fields[field];
 		}
@@ -125,7 +138,7 @@ function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 	return fields
 }
 
-const bibjson = parse_bitex(bibtex, gen_id = true)
+const bibjson = await parse_bitex(bibtex, gen_id=true, gen_cite=true)
 
 // generated bib_id
 dv.paragraph(`Generated entry ID:\n\`\`\`\n${bibjson['id']}\n\`\`\``)
