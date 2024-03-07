@@ -156,3 +156,20 @@ for (let tag_name of Object.keys(tag_dict)) {
         )
     }
 }
+
+// tasks completed today
+let tasks = dv.pages().file.tasks
+	.where(t => {
+		for (let date of dates) {
+			if (dv.equal(t.complete, dv.date(date))) {
+				return true
+			}
+		}
+	})
+	.groupBy(t => dv.page(t.path).file.name)
+	// .where(t => dv.equal(t.complete, today))
+	
+if (tasks.length > 0) {
+	dv.header(2, 'Completed 🦾')
+	dv.taskList(tasks)
+}

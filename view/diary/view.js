@@ -43,16 +43,6 @@ if (Object.entries(time_dict).length > 0) {
 	dv.paragraph(commands.join('\n'))
 }
 
-// tasks completed today
-let tasks = dv.pages().file.tasks
-	.where(t => dv.equal(t.complete, today))
-	.groupBy(t => dv.page(t.path).file.name)
-	
-if (tasks.length > 0) {
-	dv.header(2, 'Completed 🦾')
-	dv.taskList(tasks)
-}
-
 // pages created/updated today separated by type
 let tag_dict = {
 	'Type/Project': {
@@ -112,4 +102,14 @@ for (let tag_name of Object.keys(tag_dict)) {
             }))),
         )
     }
+}
+
+// tasks completed today
+let tasks = dv.pages().file.tasks
+	.where(t => dv.equal(t.complete, today))
+	.groupBy(t => dv.page(t.path).file.name)
+	
+if (tasks.length > 0) {
+	dv.header(2, 'Completed 🦾')
+	dv.taskList(tasks)
 }
