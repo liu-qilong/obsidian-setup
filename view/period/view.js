@@ -78,7 +78,7 @@ if (Object.entries(time_dict).length > 0) {
 	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
-	commands.push(`y-axis "Time (h)" 0 --> ${Math.max(...arr_sum.flat())}`)
+	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('-')}" 0 --> ${Math.max(...arr_sum.flat())}`)
 
 	if (current_file.tags.includes('Type/Week')) {
 		commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')

@@ -34,7 +34,7 @@ if (Object.entries(time_dict).length > 0) {
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
 	commands.push('x-axis [today]')
-	commands.push(`y-axis "Time (h)" 0 --> ${Math.max(...arr_sum)}`)
+	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('-')}" 0 --> ${Math.max(...arr_sum)}`)
 
 	for (let value of arr_sum.reverse()) {
 		commands.push(`bar [${value}]`)

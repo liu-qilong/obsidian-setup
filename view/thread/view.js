@@ -1,6 +1,7 @@
 const current_file = dv.current()
 const current_name = current_file.file.name
 const current_tag = current_file.aliases[0].replace('#', '')
+const max_depth = current_file.max_depth
 
 let papers = dv.pages(`#Type/Paper and #${current_tag}`).sort(p => p.bib_year, 'asc')
 
@@ -98,7 +99,11 @@ function draw_paper(p, id_dict, commands) {
     return bib_id
 }
 
-function draw_branch(name, node, start, mode) {
+function draw_branch(name, node, start, mode, layer) {
+    if (max_depth != null && layer > max_depth) {
+        return
+    }
+
 	for (let [sub_name, sub_node] of Object.entries(node)) {
         let current = start
 
@@ -147,16 +152,16 @@ function draw_branch(name, node, start, mode) {
             
             if (sub_name.startsWith('pre-')) {
                 // if sub branch name contains 'pre-', set drawing mode as upward
-                draw_branch(sub_name, sub_node, current, 'upward')
+                draw_branch(sub_name, sub_node, current, 'upward', layer + 1)
             } else {
                 // otherwise, pass current mode to the next level
-                draw_branch(sub_name, sub_node, current, mode)
+                draw_branch(sub_name, sub_node, current, mode, layer + 1)
             }
         }
 	}
 }
 
-draw_branch('', branches, 'List', 'downward')
+draw_branch('', branches, 'List', 'downward', 0)
 dv.paragraph(commands.join('\n'))
 
 // paper list

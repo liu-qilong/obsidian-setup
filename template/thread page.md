@@ -3,6 +3,7 @@ aliases:
   - "#Thread/<tag>"
 tags:
   - Type/Thread
+max_depth: 
 ---
 
 ```dataviewjs
