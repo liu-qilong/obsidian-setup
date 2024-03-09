@@ -209,7 +209,7 @@ if (Object.keys(current_file).includes('bib_doi')) {
 		dv.paragraph(`\`\`\`\n${current_file.bib_cites}\n\`\`\``)
 
 		if (cites != current_file.bib_cites) {
-			dv.paragraph('==Citation counts updated:==')
+			dv.paragraph('==Citation counts updated==:')
 			dv.paragraph(`\`\`\`\n${cites}\n\`\`\``)
 		}
 	} else {
@@ -217,5 +217,5 @@ if (Object.keys(current_file).includes('bib_doi')) {
 		dv.paragraph(`\`\`\`\nbib_cites: ${cites}\n\`\`\``)
 	}
 
-	dv.paragraph(`The ciation counts are retrieved from [CrossRef API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/a-non-technical-introduction-to-our-api/) or [Google Scholar](https://scholar.google.com).`)
+	dv.paragraph(`The ciation number is retrieved from [CrossRef API](https://www.crossref.org/documentation/retrieve-metadata/rest-api/a-non-technical-introduction-to-our-api/) or [Google Scholar](https://scholar.google.com).`)
 }
