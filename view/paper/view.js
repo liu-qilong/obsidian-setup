@@ -54,19 +54,25 @@ function paper_node(p, commands) {
 paper_node(current_file, commands)
 
 // draw linked papers
-if (dv.isArray(current_file.bib_link)) {
-	for (let l of current_file.bib_link) {
-		paper_node(dv.page(l), commands)
-
-		if (l.subpath != null) {
-			commands.push(`${current_file.bib_id} <.. ${dv.page(l).bib_id}: ${l.subpath}`)
+function draw_link(l, p_origin, p_target) {
+	if (l.subpath != null) {
+		if (l.subpath == 'related') {
+			commands.push(`${p_origin.bib_id} <..> ${p_target.bib_id}: ${l.subpath}`)
 		} else {
-			commands.push(`${current_file.bib_id} <.. ${dv.page(l).bib_id}`)
+			commands.push(`${p_origin.bib_id} <.. ${p_target.bib_id}: ${l.subpath}`)
 		}
+	} else {
+		commands.push(`${p_origin.bib_id} <.. ${p_target.bib_id}`)
 	}
 }
 
-// draw backward linked papers
+if (dv.isArray(current_file.bib_link)) {
+	for (let l of current_file.bib_link) {
+		paper_node(dv.page(l), commands)
+		draw_link(l, current_file, dv.page(l))
+	}
+}
+
 for (p of dv.pages('#Type/Paper and [[]]')) {
 	// search all inward linked papers
 	if (dv.isArray(p.bib_link)) {
@@ -75,12 +81,7 @@ for (p of dv.pages('#Type/Paper and [[]]')) {
 			if (dv.page(l).bib_id === current_file.bib_id) {
 				// find  the entries that link to the current paper and draw paper links 
 				paper_node(p, commands)
-		
-				if (l.subpath != null) {
-					commands.push(`${current_file.bib_id} ..> ${p.bib_id}: ${l.subpath}`)
-				} else {
-					commands.push(`${current_file.bib_id} ..> ${p.bib_id}`)
-				}
+				draw_link(l, current_file, p)
 			}
 		}
 	}
