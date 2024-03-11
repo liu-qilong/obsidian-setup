@@ -71,20 +71,21 @@ let arr_sum = Object.values(time_dict).map((arr) => {
 	sum = sum.map((value, idx) => value + arr[idx])
 	return sum
 })
+let total_time = sum.reduce((acc, val) => acc + val, 0)
 
-if (Object.entries(time_dict).length > 0) {
-	dv.header(2, 'Time statistics 📊')
+if (total_time > 0) {
+	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration).toFixed(2)}]`)
+	// dv.paragraph(``)
 	
 	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
-	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('-')}" 0 --> ${Math.max(...arr_sum.flat())}`)
+	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('/')}" 0 --> ${Math.max(...arr_sum.flat())}`)
 
 	if (current_file.tags.includes('Type/Week')) {
 		commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
 	} else {
 		commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
-
 	}
 
 	for (let arr of arr_sum.reverse()) {

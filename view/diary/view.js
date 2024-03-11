@@ -27,14 +27,17 @@ let arr_sum = Object.values(time_dict).map((value) => {
 	return sum
 })
 
-if (Object.entries(time_dict).length > 0) {
-	dv.header(2, 'Time statistics 📊')
+let total_time = sum
+
+if (total_time > 0) {
+	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}]`)
+	// dv.paragraph(`[total::${total_time.toFixed(2)}]`)
 	
 	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
 	commands.push('x-axis [today]')
-	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('-')}" 0 --> ${Math.max(...arr_sum)}`)
+	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('/')}" 0 --> ${Math.max(...arr_sum)}`)
 
 	for (let value of arr_sum.reverse()) {
 		commands.push(`bar [${value}]`)

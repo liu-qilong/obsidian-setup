@@ -143,8 +143,7 @@ function draw_branch(name, node, start, mode, layer) {
                         current = p.bib_id
                     }
                 }
-            }
-            else if (node.__items__.length === 0) {
+            } else if (node.__items__.length === 0) {
                 // if current branch doesn't have items
                 // combine current branch name to sub branch name
                 sub_name = (name != '')?(`${name}/${sub_name}`):(sub_name)
