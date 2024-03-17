@@ -75,8 +75,8 @@ let total_time = sum.reduce((acc, val) => acc + val, 0)
 
 if (total_time > 0) {
 	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration).toFixed(2)}]`)
-	// dv.paragraph(``)
 	
+	// time statistics bar
 	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
@@ -93,6 +93,23 @@ if (total_time > 0) {
 	}
 
 	dv.paragraph(commands.join('\n'))
+
+	// time statistics bar
+	let time_tab_header = ['total & avg']
+	let time_tab_total = [total_time]
+	let time_tab_avg = [(total_time / duration).toFixed(2)]
+
+	for (let [key, value] of Object.entries(time_dict)) {
+		let this_total = value.reduce((acc, val) => acc + val, 0)
+		time_tab_header.push(`${key} (h)`)
+		time_tab_total.push(this_total)
+		time_tab_avg.push((this_total / duration).toFixed(2))
+	}
+
+	dv.table(
+		time_tab_header,
+		[time_tab_total, time_tab_avg],
+	)
 }
 
 // pages created/updated during this period separated by type

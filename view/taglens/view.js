@@ -53,8 +53,8 @@ for (let tag_name of Object.keys(tag_dict)) {
     }
 }
 
-// tagged/linked mentions in notes
-let thoughts = dv.pages(`#${current_tag} or [[]]`).file.lists
+// tagged/linked mentions in diary notes
+let thoughts = dv.pages(`#Type/Diary and (#${current_tag} or [[]])`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
     .sort(ls => dv.date(ls.link), 'desc')
     

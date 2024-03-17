@@ -42,12 +42,7 @@ function paper_node(p, commands) {
 	let cite_str = (p.bib_cites != null)?(`[${to_short_num(p.bib_cites)}]`):('')
 	let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
 	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
-
-	if (badge_str + cite_str + note_str + comment_str != '') {
-		commands.push(`class ${p.bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`)
-	} else {
-		commands.push(`class ${p.bib_id}`)
-	}
+	commands.push(`class ${p.bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`)
 }
 
 // draw current paper
@@ -59,17 +54,17 @@ function draw_link(l, p_origin, p_target) {
 		if (l.subpath == 'related') {
 			commands.push(`${p_origin.bib_id} <..> ${p_target.bib_id}: ${l.subpath}`)
 		} else {
-			commands.push(`${p_origin.bib_id} <.. ${p_target.bib_id}: ${l.subpath}`)
+			commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}: ${l.subpath}`)
 		}
 	} else {
-		commands.push(`${p_origin.bib_id} <.. ${p_target.bib_id}`)
+		commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}`)
 	}
 }
 
 if (dv.isArray(current_file.bib_link)) {
 	for (let l of current_file.bib_link) {
 		paper_node(dv.page(l), commands)
-		draw_link(l, current_file, dv.page(l))
+		draw_link(l, dv.page(l), current_file)
 	}
 }
 
@@ -164,7 +159,7 @@ if (Object.keys(threads).length > 0) {
 // draw links to threads
 for (let tag of current_file.tags) {
 	if (tag.split('/')[0] === 'Thread') {
-		commands.push(`${thread_id_dict[tag]} .. ${current_file.bib_id}`)
+		commands.push(`${thread_id_dict[tag]} -- ${current_file.bib_id}`)
 	}
 }
 

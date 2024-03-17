@@ -90,11 +90,7 @@ function draw_paper(p, id_dict, commands) {
     }
 
     // add class definition to mermaid commands
-	if (badge_str + note_str + comment_str != '') {
-		commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
-	} else {
-		commands.push(`class ${bib_id}`)
-	}
+    commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
     
     return bib_id
 }
@@ -121,7 +117,7 @@ function draw_branch(name, node, start, mode, layer) {
                 for (let p of sub_node.toReversed()) {
                     let bib_id = draw_paper(p, id_dict, commands)
                     let name_str = (name.length == 0)?(''):(`: ${name}`)
-                    commands.push(`${bib_id} <-- ${current}${name_str}`)
+                    commands.push(`${bib_id} --> ${current}${name_str}`)
                     current = bib_id
                 }
             }
@@ -132,10 +128,7 @@ function draw_branch(name, node, start, mode, layer) {
                 // that are published before the first item in sub branch
                 // if none, then set as the first item in current branch when drawing sub-branches
                 // while leave the current drawing item unchanged when drawing root branches
-                if (start != 'List') {
-                    current = node.__items__[0].bib_id
-                }
-
+                current = node.__items__[0].bib_id
                 const sub_first = sub_node.__items__[0]
 
                 for (let p of node.__items__) {
