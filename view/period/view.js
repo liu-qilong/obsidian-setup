@@ -175,7 +175,7 @@ for (let tag_name of Object.keys(tag_dict)) {
     }
 }
 
-// tasks completed today
+// tasks completed during this period
 let tasks = dv.pages().file.tasks
 	.where(t => {
 		for (let date of dates) {
@@ -190,4 +190,40 @@ let tasks = dv.pages().file.tasks
 if (tasks.length > 0) {
 	dv.header(2, 'Completed 🦾')
 	dv.taskList(tasks)
+}
+
+// thoughts during this period
+let thoughts = []
+
+for (let date of dates) {
+	try {
+		let page = dv.page(`${diary_folder}/${date}.md`)
+
+		for (let ls of page.file.lists) {
+			if (!ls.task) {
+				thoughts.push(ls)
+			}
+		}
+	} catch {
+		continue
+	}
+}
+
+console.log(thoughts)
+
+// let thoughts = dv.pages(`#Type/Diary`).file.lists
+//     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
+//     .sort(ls => dv.date(ls.link), 'desc')
+    
+if (thoughts.length > 0) {
+    dv.header(2, 'Mentions in lists 💡')
+    dv.table(
+        ['link', 'text'],
+        thoughts.map(ls => {
+            const date = dv.date(dv.page(ls.link).date)
+            ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
+            console.log(date)
+            return [ls.link, ls.text]
+        })
+    )
 }

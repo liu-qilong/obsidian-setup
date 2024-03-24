@@ -7,6 +7,10 @@ tags:
 
 # _Week {{date:W, YYYY}}_
 
+## Goals 🎯
+
+- [ ] 
+
 ```dataviewjs
 await dv.view('utils/view/period')
 ```
