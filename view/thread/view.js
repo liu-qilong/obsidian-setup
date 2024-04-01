@@ -128,14 +128,26 @@ function draw_branch(name, node, start, mode, layer) {
                 // that are published before the first item in sub branch
                 // if none, then set as the first item in current branch when drawing sub-branches
                 // while leave the current drawing item unchanged when drawing root branches
-                current = node.__items__[0].bib_id
-                const sub_first = sub_node.__items__[0]
+                if (mode == 'downward') {
+                    current = node.__items__[0].bib_id
+                    const sub_first = sub_node.__items__[0]
 
-                for (let p of node.__items__) {
-                    if (sub_first.bib_year > p.bib_year) {
-                        current = p.bib_id
+                    for (let p of node.__items__) {
+                        if (sub_first.bib_year > p.bib_year) {
+                            current = p.bib_id
+                        }
+                    }
+                } else if (mode == 'upward') {
+                    current = node.__items__[node.__items__.length - 1].bib_id
+                    const sub_last = sub_node.__items__[sub_node.__items__.length - 1]
+
+                    for (let p of node.__items__) {
+                        if (sub_last.bib_year < p.bib_year) {
+                            current = p.bib_id
+                        }
                     }
                 }
+                
             } else if (node.__items__.length === 0) {
                 // if current branch doesn't have items
                 // combine current branch name to sub branch name
