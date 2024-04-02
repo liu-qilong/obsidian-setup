@@ -84,9 +84,10 @@ let arr_sum = Object.values(time_dict).map((arr) => {
 	return sum
 })
 let total_time = sum.reduce((acc, val) => acc + val, 0)
+let duration_with_time_stat = sum.filter((value) => value > 0).length
 
 if (total_time > 0) {
-	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration).toFixed(2)}]`)
+	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration_with_time_stat).toFixed(2)}]`)
 	
 	// time statistics bar
 	let mermaid_style = ""
@@ -119,13 +120,13 @@ if (total_time > 0) {
 	// time statistics bar
 	let time_tab_header = ['total & avg']
 	let time_tab_total = [total_time]
-	let time_tab_avg = [(total_time / duration).toFixed(2)]
+	let time_tab_avg = [(total_time / duration_with_time_stat).toFixed(2)]
 
 	for (let [key, value] of Object.entries(time_dict)) {
 		let this_total = value.reduce((acc, val) => acc + val, 0)
 		time_tab_header.push(`${key} (h)`)
 		time_tab_total.push(this_total)
-		time_tab_avg.push((this_total / duration).toFixed(2))
+		time_tab_avg.push((this_total / duration_with_time_stat).toFixed(2))
 	}
 
 	dv.table(
