@@ -3,8 +3,6 @@ aliases:
   - "#Project/<name>"
 tags:
   - Type/Project
-project_start: 
-project_complete: 
 ---
 
 ## Todo

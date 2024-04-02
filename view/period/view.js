@@ -17,11 +17,23 @@ function week_dates(year, week) {
 	return Array.from({ length: 7 }, (_, i) => days_later(week_start, i))
 }
 
+function quarter_dates(year, quarter) {
+	let month = (quarter - 1) * 3
+	let start = new Date(year, month, 1)
+	let end = new Date(year, month + 3, 0)
+	let duration = (end - start) / (1000 * 60 * 60 * 24) + 1
+	return Array.from({ length: duration }, (_, i) => days_later(start, i))
+}
+
 let dates, duration
 
 if (current_file.tags.includes('Type/Week')) {
 	dates = week_dates(current_file.year, current_file.week)
 	duration = 7
+} else if (current_file.tags.includes('Type/Quarter')) {
+	dates = quarter_dates(current_file.year, current_file.quarter)
+	duration = dates.length
+	console.log(duration)
 } else {
 	let startdate = String(dv.current().start).split('T')[0]
 	duration = dv.current().duration
@@ -77,7 +89,17 @@ if (total_time > 0) {
 	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration).toFixed(2)}]`)
 	
 	// time statistics bar
-	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%" // xyChart/backgroundColor: background color
+	let mermaid_style = ""
+
+	if (duration < 20) {
+		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%"
+	// themeVariables/xyChart/backgroundColor: background color
+	} else {
+		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%"
+		// xyChart/xAxis/showLabel: show x-axis label or not
+		// themeVariables/xyChart/backgroundColor: background color
+	}
+	
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
 	commands.push(`title ${Object.keys(time_dict).join('-')}`)
 	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('/')}" 0 --> ${Math.max(...arr_sum.flat())}`)
@@ -114,11 +136,6 @@ if (total_time > 0) {
 
 // pages created/updated during this period separated by type
 let tag_dict = {
-	'Type/Project': {
-		'show_name': 'projects 🏗️',
-        'match_vars': ['project_start', 'project_complete'],
-		'show_vars': ['project_start', 'project_complete'],
-    },
     'Type/Paper': {
 		'show_name': 'papers 📃',
 		'match_vars': ['date', 'update'],

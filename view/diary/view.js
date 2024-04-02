@@ -62,11 +62,6 @@ if (total_time > 0) {
 
 // pages created/updated today separated by type
 let tag_dict = {
-	'Type/Project': {
-		'show_name': 'projects 🏗️',
-        'match_vars': ['project_start', 'project_complete'],
-		'show_vars': ['project_start', 'project_complete'],
-    },
     'Type/Paper': {
 		'show_name': 'papers 📃',
 		'match_vars': ['date', 'update'],

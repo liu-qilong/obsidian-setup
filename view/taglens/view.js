@@ -5,7 +5,7 @@ let current_tag = dv.current().aliases[0].replace('#', '')
 let tag_dict = {
     'Type/Project': {
         'show_name': 'projects 🏗️',
-        'show_vars': ['project_start', 'project_complete'],
+        'show_vars': [],
     },
     'Type/Topic': {
         'show_name': 'topics 📚',
