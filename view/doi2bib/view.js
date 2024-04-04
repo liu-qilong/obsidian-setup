@@ -16,13 +16,13 @@ if (file.doi === null && file.bibtex === null) {
 		}
 
 		bibtex = await get_bibtex(file.doi)
+		dv.paragraph("_[progress] got `bibtex` from `doi` online_")
 	} else {
 		bibtex = file.bibtex
+		dv.paragraph("_[progress] got `bibtex` from properties field_")
 	}
 
 	// convert bibtex to yaml
-	dv.header(2, 'BibTeX to YAML')
-
 	async function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 		// match type, id, & fields
 		const entryRegex = /@([a-zA-Z]+){([^,]+),(.*)}/g;
@@ -130,8 +130,7 @@ if (file.doi === null && file.bibtex === null) {
 	}
 
 	const bibjson = await parse_bitex(bibtex, gen_id=true)
-
-	console.log(bibjson)
+	dv.paragraph("_[progress] parsed `bibtex`_")
 
 	// get citations count
 	if (file.cites === null) {
@@ -144,9 +143,11 @@ if (file.doi === null && file.bibtex === null) {
 		
 		if (Object.keys(bibjson).includes('doi')) {
 			bibjson['cites'] = await get_cites(bibjson['doi'])
+			dv.paragraph("_[progress] got `cites` online_")
 		}
 	} else {
 		bibjson['cites'] = file.cites
+		dv.paragraph("_[progress] got `cites` from properties field_")
 	}
 
 	// generated bib_id

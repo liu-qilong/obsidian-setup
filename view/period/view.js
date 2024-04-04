@@ -140,13 +140,26 @@ let tag_dict = {
     'Type/Paper': {
 		'show_name': 'papers 📃',
 		'match_vars': ['date', 'update'],
-		'show_vars': ['bib_title', 'bib_cites', 'date', 'update'],
+		'show_vars': ['bib_title', 'bib_cites', 'bib_badge'],
 	},
     'Type/Note': {
 		'show_name': 'notes ✍️',
 		'match_vars': ['date', 'update'],
 		'show_vars': ['date', 'update'],
 	},
+}
+
+function bib_badge2str(bib_badge) {
+	let badge2emoji = {
+		'skimmed': '🪫',
+		'read': '🔋',
+		'seminal': '💡',
+		'important': '📌',
+		'work-well': '👍',
+		'insightful': '🧠',
+	}
+
+	return (dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
 }
 
 for (let tag_name of Object.keys(tag_dict)) {
@@ -185,7 +198,9 @@ for (let tag_name of Object.keys(tag_dict)) {
                     } else {
                         return null
                     }
-                } else {
+                } else if (v === 'bib_badge') {
+					return bib_badge2str(p[v])
+				} else {
                     return p[v]
                 }
             }))),
