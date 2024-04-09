@@ -156,6 +156,7 @@ function bib_badge2str(bib_badge) {
 		'seminal': '💡',
 		'important': '📌',
 		'work-well': '👍',
+		'widely-used': '🔧',
 		'insightful': '🧠',
 	}
 

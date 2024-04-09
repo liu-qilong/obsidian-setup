@@ -71,6 +71,7 @@ if (current_file.no_flow != true) {
             'seminal': '💡',
             'important': '📌',
             'work-well': '👍',
+		    'widely-used': '🔧',
             'insightful': '🧠',
         }
 
