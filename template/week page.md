@@ -12,5 +12,5 @@ tags:
 - [ ] 
 
 ```dataviewjs
-await dv.view('utils/view/period')
+await dv.view('obsidian-setup/view/period')
 ```

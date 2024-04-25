@@ -7,5 +7,5 @@ max_depth:
 ---
 
 ```dataviewjs
-await dv.view('utils/view/thread')
+await dv.view('obsidian-setup/view/thread')
 ```

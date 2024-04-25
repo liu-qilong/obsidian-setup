@@ -2,7 +2,7 @@
 aliases: []
 tags:
   - Type/Paper
-date: <%tp.date.now()%>
+date: 2024-04-25
 update: []
 bib_link: []
 bib_badge: []
@@ -12,5 +12,5 @@ bib_pdf:
 ---
 
 ```dataviewjs
-await dv.view('utils/view/paper')
+await dv.view('obsidian-setup/view/paper')
 ```

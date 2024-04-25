@@ -5,5 +5,5 @@ cites:
 ---
 
 ```dataviewjs
-await dv.view('utils/view/doi2bib')
+await dv.view('obsidian-setup/view/doi2bib')
 ```

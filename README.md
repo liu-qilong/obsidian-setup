@@ -26,8 +26,6 @@ Benchmarks my time spend, task completions, and other acitvities
 
 ## Setup
 
-Clone this repository, renamed the repository folder as `utils/`, and place it under your Obsidian vault.
-
-Them you can create container pages _(topic, project, paper thread, etc.)_ and note pages _(note, paper, dairy, etc.)_ with templates under `utils/template`. Noted that these tempaltes works the best with Obsidian plugin [Templater](https://github.com/SilentVoid13/Templater).
+Clone this repository and place it under your Obsidian vault. Them you can create container pages _(topic, project, paper thread, etc.)_ and note pages _(note, paper, dairy, etc.)_ with templates under `utils/template`. Noted that these tempaltes works the best with Obsidian plugin [Templater](https://github.com/SilentVoid13/Templater).
 
 > A more detialed setup guild is coming soon...

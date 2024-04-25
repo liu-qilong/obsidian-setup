@@ -1,16 +1,16 @@
 ---
-year: <% tp.date.now("YYYY") %>
-quarter: <% tp.date.now("Q") %>
+year: 2024
+quarter: 2
 tags:
   - Type/Quarter
 ---
 
-# _Quarter <% tp.date.now("Q") %>, <% tp.date.now("YYYY") %>_
+# _Quarter 2, 2024_
 
 ## Goals 🎯
 
 - [ ] 
 
 ```dataviewjs
-await dv.view('utils/view/period')
+await dv.view('obsidian-setup/view/period')
 ```

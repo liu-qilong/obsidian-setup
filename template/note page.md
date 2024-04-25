@@ -1,6 +1,6 @@
 ---
 tags:
   - Type/Note
-date: <%tp.date.now()%>
+date: 2024-04-25
 update: []
 ---

@@ -10,5 +10,5 @@ birthday:
 ---
 
 ```dataviewjs
-await dv.view('utils/view/taglens')
+await dv.view('obsidian-setup/view/taglens')
 ```

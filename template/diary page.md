@@ -10,7 +10,7 @@ time_venture:
 # _{{date:dddd, MMMM D, YYYY}}_
 
 ```dataviewjs
-await dv.view('utils/view/diary')
+await dv.view('obsidian-setup/view/diary')
 ```
 
 ## Thoughts 💡
