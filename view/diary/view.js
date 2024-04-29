@@ -47,11 +47,11 @@ if (total_time > 0) {
 
 	// time statistics table
 	let time_tab_header = ['total']
-	let time_tab_total = [total_time]
+	let time_tab_total = [total_time.toFixed(2)]
 
 	for (let [key, value] of Object.entries(time_dict)) {
 		time_tab_header.push(`${key} (h)`)
-		time_tab_total.push(value)
+		time_tab_total.push(value.toFixed(2))
 	}
 
 	dv.table(

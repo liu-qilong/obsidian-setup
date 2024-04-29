@@ -1,10 +1,11 @@
 ---
-date: {{date:YYYY-MM-DD}}
+date:
+  "{ date:YYYY-MM-DD }": 
 tags:
   - Type/Diary
 time_learn: 
 time_work: 
-time_venture: 
+time_dev:
 ---
 
 # _{{date:dddd, MMMM D, YYYY}}_
