@@ -93,12 +93,14 @@ if (total_time > 0) {
 	let mermaid_style = ""
 
 	if (duration < 20) {
-		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%"
-	// themeVariables/xyChart/backgroundColor: background color
+		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9be0, #bbbbbbe0, #e18683e0, #037d7ee0'}}}}%%"
+		// xyChart/backgroundColor: background color
+		// xyChart/plotColorPalette: plot color palette
 	} else {
-		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000'}}}}%%"
+		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9be0, #bbbbbbe0, #e18683e0, #037d7ee0'}}}}%%"
 		// xyChart/xAxis/showLabel: show x-axis label or not
 		// themeVariables/xyChart/backgroundColor: background color
+		// xyChart/plotColorPalette: plot color palette
 	}
 	
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]

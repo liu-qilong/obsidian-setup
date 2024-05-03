@@ -4,7 +4,7 @@ date:
 tags:
   - Type/Diary
 time_learn: 
-time_work: 
+time_deep: 
 time_dev:
 ---
 
