@@ -33,7 +33,7 @@ if (total_time > 0) {
 	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}]`)
 	
 	// time statistics bar
-	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9be0, #bbbbbbe0, #e18683e0, #037d7ee0'}}}}%%"
+	const mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'}}}}%%"
 	// xyChart/backgroundColor: background color
 	// xyChart/plotColorPalette: plot color palette
 	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]

@@ -93,11 +93,11 @@ if (total_time > 0) {
 	let mermaid_style = ""
 
 	if (duration < 20) {
-		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9be0, #bbbbbbe0, #e18683e0, #037d7ee0'}}}}%%"
+		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'}}}}%%"
 		// xyChart/backgroundColor: background color
 		// xyChart/plotColorPalette: plot color palette
 	} else {
-		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9be0, #bbbbbbe0, #e18683e0, #037d7ee0'}}}}%%"
+		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'}}}}%%"
 		// xyChart/xAxis/showLabel: show x-axis label or not
 		// themeVariables/xyChart/backgroundColor: background color
 		// xyChart/plotColorPalette: plot color palette

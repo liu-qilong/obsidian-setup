@@ -5,6 +5,7 @@ tags:
   - Type/Diary
 time_learn: 
 time_deep: 
+time_affair: 
 time_dev:
 ---
 
