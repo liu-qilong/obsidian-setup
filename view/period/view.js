@@ -1,5 +1,5 @@
 const current_file = dv.current()
-let diary_folder = 'content/diary'
+let diary_folder = 'review/diary'
 
 // parse periods dates
 function days_later(date_str, days) {

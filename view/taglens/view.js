@@ -85,7 +85,6 @@ if (thoughts.length > 0) {
         thoughts.map(ls => {
             const date = dv.date(dv.page(ls.link).date)
             ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
-            console.log(date)
             return [ls.link, ls.text]
         })
     )
