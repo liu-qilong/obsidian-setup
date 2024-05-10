@@ -221,7 +221,6 @@ let tasks = dv.pages().file.tasks
 		}
 	})
 	.groupBy(t => dv.page(t.path).file.name)
-	// .where(t => dv.equal(t.complete, today))
 	
 if (tasks.length > 0) {
 	dv.header(2, 'Completed 🦾')
@@ -244,12 +243,6 @@ for (let date of dates) {
 		continue
 	}
 }
-
-console.log(thoughts)
-
-// let thoughts = dv.pages(`#Type/Diary`).file.lists
-//     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
-//     .sort(ls => dv.date(ls.link), 'desc')
     
 if (thoughts.length > 0) {
     dv.header(2, 'Mentions in lists 💡')
@@ -258,7 +251,6 @@ if (thoughts.length > 0) {
         thoughts.map(ls => {
             const date = dv.date(dv.page(ls.link).date)
             ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
-            console.log(date)
             return [ls.link, ls.text]
         })
     )

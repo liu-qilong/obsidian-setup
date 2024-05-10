@@ -1,5 +1,17 @@
 let current_name = dv.current().file.name
-let current_tag = dv.current().aliases[0].replace('#', '')
+
+let current_tag
+let query_str
+
+try {
+    if (dv.current().aliases[0][0] === '#') {
+        current_tag = dv.current().aliases[0].replace('#', '')
+        query_str = `(#${current_tag} or [[]])`
+    }
+} catch (err) {
+    current_tag = null
+    query_str = '[[]]'
+}
 
 // tagged/linked pages separated by type
 let tag_dict = {
@@ -27,12 +39,20 @@ let tag_dict = {
         'show_name': 'institutes 🏛️',
         'show_vars': ['address', 'email'],
     },
+    'Type/Course': {
+        'show_name': 'course 👨🏼‍🏫',
+        'show_vars': [],
+    },
+    'Type/Book': {
+        'show_name': 'books 📚',
+        'show_vars': [],
+    },
 }
 
 for (let tag_name of Object.keys(tag_dict)) {
     let show_name = tag_dict[tag_name]['show_name']
     let show_vars = tag_dict[tag_name]['show_vars']
-    let pages = dv.pages(`#${tag_name} and (#${current_tag} or [[]])`)
+    let pages = dv.pages(`#${tag_name} and ${query_str}`)
 
     if (pages.length > 0) {
         dv.header(2, `Related ${show_name}`)
@@ -54,7 +74,7 @@ for (let tag_name of Object.keys(tag_dict)) {
 }
 
 // tagged/linked mentions in diary notes
-let thoughts = dv.pages(`#Type/Diary and (#${current_tag} or [[]])`).file.lists
+let thoughts = dv.pages(`#Type/Diary and ${query_str}`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
     .sort(ls => dv.date(ls.link), 'desc')
     
