@@ -16,35 +16,35 @@ try {
 // tagged/linked pages separated by type
 let tag_dict = {
     'Type/Project': {
-        'show_name': 'projects 🏗️',
+        'show_name': 'Projects 🏗️',
         'show_vars': [],
     },
     'Type/Topic': {
-        'show_name': 'topics 📚',
+        'show_name': 'Topics 📚',
         'show_vars': [],
     },
     'Type/Thread': {
-        'show_name': 'threads 🗞️',
+        'show_name': 'Threads 🗞️',
         'show_vars': [],
     },
     'Type/Note': {
-        'show_name': 'notes ✍️',
+        'show_name': 'Notes ✍️',
         'show_vars': ['date', 'update'],
     },
     'Type/People': {
-        'show_name': 'people 📞',
+        'show_name': 'People 📞',
         'show_vars': ['address', 'email'],
     },
     'Type/Institute': {
-        'show_name': 'institutes 🏛️',
+        'show_name': 'Institutes 🏛️',
         'show_vars': ['address', 'email'],
     },
     'Type/Course': {
-        'show_name': 'course 👨🏼‍🏫',
+        'show_name': 'Course 👨🏼‍🏫',
         'show_vars': [],
     },
     'Type/Book': {
-        'show_name': 'books 📚',
+        'show_name': 'Books 📚',
         'show_vars': [],
     },
 }
@@ -55,7 +55,7 @@ for (let tag_name of Object.keys(tag_dict)) {
     let pages = dv.pages(`#${tag_name} and ${query_str}`)
 
     if (pages.length > 0) {
-        dv.header(2, `Related ${show_name}`)
+        dv.header(2, show_name)
         dv.table(
             ['link'].concat(show_vars),
             pages.map(p => [p.file.link].concat(show_vars.map(v => {
@@ -79,7 +79,7 @@ let thoughts = dv.pages(`#Type/Diary and ${query_str}`).file.lists
     .sort(ls => dv.date(ls.link), 'desc')
     
 if (thoughts.length > 0) {
-    dv.header(2, 'Mentions in lists 💡')
+    dv.header(2, 'Thoughts 💡')
     dv.table(
         ['link', 'text'],
         thoughts.map(ls => {

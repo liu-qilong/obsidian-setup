@@ -140,12 +140,12 @@ if (total_time > 0) {
 // pages created/updated during this period separated by type
 let tag_dict = {
     'Type/Paper': {
-		'show_name': 'papers 📃',
+		'show_name': 'Papers 📃',
 		'match_vars': ['date', 'update'],
 		'show_vars': ['bib_title', 'bib_cites', 'bib_badge'],
 	},
     'Type/Note': {
-		'show_name': 'notes ✍️',
+		'show_name': 'Notes ✍️',
 		'match_vars': ['date', 'update'],
 		'show_vars': ['date', 'update'],
 	},
@@ -191,7 +191,7 @@ for (let tag_name of Object.keys(tag_dict)) {
 		})
 	
 	if (pages.length > 0) {
-        dv.header(2, `Period's ${show_name}`)
+        dv.header(2, show_name)
         dv.table(
             ['link'].concat(show_vars),
             pages.map(p => [p.file.link].concat(show_vars.map(v => {
@@ -245,7 +245,7 @@ for (let date of dates) {
 }
     
 if (thoughts.length > 0) {
-    dv.header(2, 'Mentions in lists 💡')
+    dv.header(2, 'Thoughts 💡')
     dv.table(
         ['link', 'text'],
         thoughts.map(ls => {
