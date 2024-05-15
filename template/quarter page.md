@@ -1,11 +1,11 @@
 ---
-year: 2024
-quarter: 2
+year: <% tp.date.now("YYYY") %>
+quarter: <% tp.date.now("Q") %>
 tags:
   - Type/Quarter
 ---
 
-# _Quarter 2, 2024_
+# # _Quarter <% tp.date.now("Q") %>, <% tp.date.now("YYYY") %>_
 
 ## Goals 🎯
 
