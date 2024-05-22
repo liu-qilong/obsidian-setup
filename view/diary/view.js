@@ -1,5 +1,6 @@
 const {PaperThread} = await cJS()
 const {DailyLens} = await cJS()
+const {TagLens} = await cJS()
 
 const current_file = dv.current()
 
@@ -105,23 +106,10 @@ if (total_time > 0) {
 }
 
 // pages created/updated during this period separated by type
-let tag_dict = {
-    'Type/Paper': {
-		'show_name': 'Papers 📃',
-		'match_vars': ['date', 'update'],
-		'show_vars': ['bib_title', 'bib_cites', 'bib_badge'],
-	},
-    'Type/Note': {
-		'show_name': 'Notes ✍️',
-		'match_vars': ['date', 'update'],
-		'show_vars': ['date', 'update'],
-	},
-}
-
-for (let tag_name of Object.keys(tag_dict)) {
-	let show_name = tag_dict[tag_name]['show_name']
-	let match_vars = tag_dict[tag_name]['match_vars']
-	let show_vars = tag_dict[tag_name]['show_vars']
+for (let tag_name of Object.keys(DailyLens.tag_dict)) {
+	let show_name = DailyLens.tag_dict[tag_name]['show_name']
+	let match_vars = DailyLens.tag_dict[tag_name]['match_vars']
+	let show_vars = DailyLens.tag_dict[tag_name]['show_vars']
     let pages = dv.pages(`#${tag_name}`)
 		.where(p => {
 			let page_dates = []
@@ -143,25 +131,7 @@ for (let tag_name of Object.keys(tag_dict)) {
 			}
 		})
 	
-	if (pages.length > 0) {
-        dv.header(2, show_name)
-        dv.table(
-            ['link'].concat(show_vars),
-            pages.map(p => [p.file.link].concat(show_vars.map(v => {
-                if (v === 'update') {
-                    if (dv.isArray(p[v])) {
-                        return p[v][p[v].length - 1]
-                    } else {
-                        return null
-                    }
-                } else if (v === 'bib_badge') {
-					return PaperThread.bib_badge2str(dv, p[v])
-				} else {
-                    return p[v]
-                }
-            }))),
-        )
-    }
+		TagLens.show_related(dv, show_name, show_vars, pages, PaperThread)
 }
 
 // tasks completed during this period

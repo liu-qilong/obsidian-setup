@@ -1,6 +1,19 @@
 class DailyLens {
     diary_folder = 'review/diary'
 
+    tag_dict = {
+        'Type/Paper': {
+            'show_name': 'Papers 📃',
+            'match_vars': ['date', 'update'],
+            'show_vars': ['bib_title', 'bib_cites', 'bib_badge'],
+        },
+        'Type/Note': {
+            'show_name': 'Notes ✍️',
+            'match_vars': ['date', 'update'],
+            'show_vars': ['date', 'update'],
+        },
+    }
+
     // date operations
     days_later(date_str, days) {
         let date = new Date(date_str)

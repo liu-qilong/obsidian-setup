@@ -1,3 +1,6 @@
+const {TagLens} = await cJS()
+const {PaperThread} = await cJS()
+
 let current_name = dv.current().file.name
 let current_tag
 let query_str
@@ -13,63 +16,12 @@ try {
 }
 
 // tagged/linked pages separated by type
-let tag_dict = {
-    'Type/Project': {
-        'show_name': 'Projects 🏗️',
-        'show_vars': [],
-    },
-    'Type/Topic': {
-        'show_name': 'Topics 📚',
-        'show_vars': [],
-    },
-    'Type/Thread': {
-        'show_name': 'Threads 🗞️',
-        'show_vars': [],
-    },
-    'Type/Note': {
-        'show_name': 'Notes ✍️',
-        'show_vars': ['date', 'update'],
-    },
-    'Type/People': {
-        'show_name': 'People 📞',
-        'show_vars': ['address', 'email'],
-    },
-    'Type/Institute': {
-        'show_name': 'Institutes 🏛️',
-        'show_vars': ['address', 'email'],
-    },
-    'Type/Course': {
-        'show_name': 'Course 👨🏼‍🏫',
-        'show_vars': [],
-    },
-    'Type/Book': {
-        'show_name': 'Books 📚',
-        'show_vars': [],
-    },
-}
-
-for (let tag_name of Object.keys(tag_dict)) {
-    let show_name = tag_dict[tag_name]['show_name']
-    let show_vars = tag_dict[tag_name]['show_vars']
+for (let tag_name of Object.keys(TagLens.tag_dict)) {
+    let show_name = TagLens.tag_dict[tag_name]['show_name']
+    let show_vars = TagLens.tag_dict[tag_name]['show_vars']
     let pages = dv.pages(`#${tag_name} and ${query_str}`)
 
-    if (pages.length > 0) {
-        dv.header(2, show_name)
-        dv.table(
-            ['link'].concat(show_vars),
-            pages.map(p => [p.file.link].concat(show_vars.map(v => {
-                if (v === 'update') {
-                    if (dv.isArray(p[v])) {
-                        return p[v][p[v].length - 1]
-                    } else {
-                        return null
-                    }
-                } else {
-                    return p[v]
-                }
-            }))),
-        )
-    }
+    TagLens.show_related(dv, show_name, show_vars, pages, PaperThread)
 }
 
 // tagged/linked mentions in diary notes
