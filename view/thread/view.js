@@ -12,12 +12,8 @@ if (current_file.no_flow != true) {
     // statistics
     dv.header(2, `Thread [total::${papers.length}] [skimmed::${papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
-    const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
-    // nodeBorder: class box segment line color
-    // mainBkg: background color of the links' text box
-
     let commands = []
-    commands.push(`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`)
+    commands.push(`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`)
     commands.push(`class List {\n${current_name}\n#${current_tag}\n}`)
 
     // parse paper branches
@@ -134,21 +130,7 @@ if (current_file.no_bibtex != true) {
     commands = ['```']
 
     for (let p of papers) {
-        commands.push(`@${p.bib_type}{${p.bib_id},`)
-        let flag = false
-
-        for (let [key, value] of Object.entries(p)) {
-            if (key == 'bib_id') {
-                flag = true
-                continue
-            }
-
-            if (flag == true && key.includes('bib_')) {
-                commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
-            }
-        }
-
-        commands.push('}\n')
+        PaperThread.paper_bibtex(p, commands)
     }
 
     dv.paragraph(commands.join('\n'))

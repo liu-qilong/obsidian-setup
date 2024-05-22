@@ -12,11 +12,7 @@ if (current_file.bib_id != current_name) {
 // thread view
 dv.header(2, 'Thread')
 
-const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
-// nodeBorder: class box segment line color
-// mainBkg: background color of the links' text box
-
-let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
+let commands = [`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`]
 let id_dict = []
 
 // draw current paper
@@ -132,22 +128,8 @@ dv.paragraph(commands.join('\n'))
 // bibtex
 dv.header(2, 'BibTex')
 
-commands = ['```', `@${current_file.bib_type}{${current_file.bib_id},`]
-let flag = false
-
-for (let [key, value] of Object.entries(current_file)) {
-	if (key == 'bib_id') {
-		flag = true
-		continue
-	}
-
-	if (flag == true && key.includes('bib_')) {
-		commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
-	}
-}
-
-commands.push('}', '```')
-
+commands = ['```']
+PaperThread.paper_bibtex(current_file, commands)
 dv.paragraph(commands.join('\n'))
 
 // check updates of citations counts

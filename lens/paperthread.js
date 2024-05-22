@@ -1,4 +1,9 @@
 class PaperThread {
+    // thread view related
+    mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
+    // nodeBorder: class box segment line color
+    // mainBkg: background color of the links' text box
+    
     bib_badge2str(dv, bib_badge) {
         let badge2emoji = {
             'skimmed': '🪫',
@@ -48,6 +53,7 @@ class PaperThread {
         }
     }
 
+    // nested dict operations
     setup_nested_dict(dict, index) {
         let current = dict
         
@@ -72,10 +78,36 @@ class PaperThread {
         current.__items__.push(value)
     }
 
+    // bibtex related
+    paper_bibtex(p, commands) {
+        commands.push(`@${p.bib_type}{${p.bib_id},`)
+        let flag = false
+
+        for (let [key, value] of Object.entries(p)) {
+            if (key == 'bib_id') {
+                flag = true
+                continue
+            }
+            if (flag == true && key.includes('bib_')) {
+                commands.push(`\t${key.replace('bib_', '')} = {${value}},`)
+            }
+        }
+
+        commands.push('}\n')
+    }
+
     async get_cites(doi) {
         return fetch(`https://api.crossref.org/works/${doi}`)
             .then(response => response.json())
             .then(data => data['message']['is-referenced-by-count'])
             .catch(error => console.error('Error:', error))
     }
+
+    async get_bibtex(doi) {
+        return fetch(`https://doi.org/${doi}`, { headers: { Accept: "application/x-bibtex" }})
+        .then(response => response.text())
+        .catch(error => {
+            console.error('Error:', error)
+        })
+    }   
 }
