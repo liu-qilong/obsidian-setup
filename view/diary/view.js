@@ -1,4 +1,5 @@
 const current_file = dv.current()
+let current_name = dv.current().file.name
 let today = current_file.date
 
 // time statistics
@@ -142,4 +143,21 @@ let tasks = dv.pages().file.tasks
 if (tasks.length > 0) {
 	dv.header(2, 'Completed 🦾')
 	dv.taskList(tasks)
+}
+
+// thoughts mention today
+let thoughts = dv.pages(`#Type/Diary and [[]]`).file.lists
+    .where(ls => (!ls.task & (ls.text.includes(current_name))))
+    .sort(ls => dv.date(ls.link), 'desc')
+    
+if (thoughts.length > 0) {
+    dv.header(2, 'Mentions 💡')
+    dv.table(
+        ['link', 'text'],
+        thoughts.map(ls => {
+            const date = dv.date(dv.page(ls.link).date)
+            ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
+            return [ls.link, ls.text]
+        })
+    )
 }

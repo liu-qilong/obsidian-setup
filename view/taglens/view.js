@@ -1,5 +1,4 @@
 let current_name = dv.current().file.name
-
 let current_tag
 let query_str
 

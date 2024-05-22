@@ -230,7 +230,7 @@ if (tasks.length > 0) {
 // thoughts during this period
 let thoughts = []
 
-for (let date of dates) {
+for (let date of dates.reverse()) {
 	try {
 		let page = dv.page(`${diary_folder}/${date}.md`)
 
