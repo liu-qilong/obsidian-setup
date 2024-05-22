@@ -1,3 +1,5 @@
+const {PaperThread} = await cJS()
+
 const current_file = dv.current()
 const current_name = dv.current().file.name
 
@@ -15,43 +17,10 @@ const mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000'
 // mainBkg: background color of the links' text box
 
 let commands = [`\`\`\`mermaid\n${mermaid_style}\nclassDiagram`]
-
-function to_short_num(num) {
-	if (Math.abs(num) >= 1e9) {
-		return Math.sign(num)*((Math.abs(num)/1e9).toFixed(1)) + 'b'
-	} else if (Math.abs(num) >= 1e6) {
-		return Math.sign(num)*((Math.abs(num)/1e6).toFixed(1)) + 'm'
-	} else if (Math.abs(num) >= 1e3) {
-		return Math.sign(num)*((Math.abs(num)/1e3).toFixed(1)) + 'k'
-	} else {
-		return num
-	}
-}
-
-function bib_badge2str(bib_badge) {
-	let badge2emoji = {
-		'skimmed': '🪫',
-		'read': '🔋',
-		'seminal': '💡',
-		'important': '📌',
-		'work-well': '👍',
-		'widely-used': '🔧',
-		'insightful': '🧠',
-	}
-
-	return (dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
-}
-
-function paper_node(p, commands) {
-	let badge_str = bib_badge2str(p.bib_badge)
-	let cite_str = (p.bib_cites != null)?(`[${to_short_num(p.bib_cites)}]`):('')
-	let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
-	let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
-	commands.push(`class ${p.bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`)
-}
+let id_dict = []
 
 // draw current paper
-paper_node(current_file, commands)
+PaperThread.paper_node(dv, current_file, id_dict, commands)
 
 // draw linked papers
 function draw_link(l, p_origin, p_target) {
@@ -68,7 +37,7 @@ function draw_link(l, p_origin, p_target) {
 
 if (dv.isArray(current_file.bib_link)) {
 	for (let l of current_file.bib_link) {
-		paper_node(dv.page(l), commands)
+		PaperThread.paper_node(dv, dv.page(l), id_dict, commands)
 		draw_link(l, dv.page(l), current_file)
 	}
 }
@@ -80,7 +49,7 @@ for (p of dv.pages('#Type/Paper and [[]]')) {
 			// go through these papers bib_link
 			if (dv.page(l).bib_id === current_file.bib_id) {
 				// find  the entries that link to the current paper and draw paper links 
-				paper_node(p, commands)
+				PaperThread.paper_node(dv, p, id_dict, commands)
 				draw_link(l, current_file, p)
 			}
 		}
@@ -88,22 +57,11 @@ for (p of dv.pages('#Type/Paper and [[]]')) {
 }
 
 // parse nested threads
-function setup_nested_dict(dict, index) {
-	let current = dict
-	
-	for (let id of index) {
-		if (current[id] === undefined) {
-			current[id] = {}
-		}
-        current = current[id]
-	}
-}
-
 let threads = {}
 
 for (let tag of current_file.tags) {
 	if (tag.split('/')[0] === 'Thread') {
-		setup_nested_dict(threads, tag.split('/'))
+		PaperThread.setup_nested_dict(threads, tag.split('/'))
 	}
 }
 
@@ -193,17 +151,10 @@ commands.push('}', '```')
 dv.paragraph(commands.join('\n'))
 
 // check updates of citations counts
-async function get_cites(doi) {
-	return fetch(`https://api.crossref.org/works/${doi}`)
-		.then(response => response.json())
-		.then(data => data['message']['is-referenced-by-count'])
-		.catch(error => console.error('Error:', error))
-}
-
 if (Object.keys(current_file).includes('bib_doi')) {
 	dv.header(2, 'Cites')
 
-	let cites = await get_cites(current_file.bib_doi)
+	let cites = await PaperThread.get_cites(current_file.bib_doi)
 	
 	if (Object.keys(current_file).includes('bib_cites')) {
 		dv.paragraph('Citation counts:')

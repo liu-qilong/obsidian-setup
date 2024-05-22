@@ -1,3 +1,5 @@
+const {PaperThread} = await cJS()
+
 const current_file = dv.current()
 const current_name = current_file.file.name
 const current_tag = current_file.aliases[0].replace('#', '')
@@ -19,19 +21,6 @@ if (current_file.no_flow != true) {
     commands.push(`class List {\n${current_name}\n#${current_tag}\n}`)
 
     // parse paper branches
-    function push_nested_dict(dict, index, value) {
-        let current = dict
-        
-        for (let id of index) {
-            if (current[id] === undefined) {
-                current[id] = { __items__: [] }
-            }
-            current = current[id]
-        }
-
-        current.__items__.push(value)
-    }
-
     let branches = { __items__: [] }
 
     for (let p of papers) {
@@ -40,7 +29,7 @@ if (current_file.no_flow != true) {
                 if (tag.includes(`${current_tag}/`)) {
                     // belongs to a sub tag
                     let branch_index = tag.replace(`${current_tag}/`, '').split('/')
-                    push_nested_dict(branches, branch_index, p)
+                    PaperThread.push_nested_dict(branches, branch_index, p)
                 } else {
                     // belongs to the current tag
                     branches.__items__.push(p)
@@ -51,55 +40,6 @@ if (current_file.no_flow != true) {
 
     // draw branches
     let id_dict = []
-
-    function to_short_num(num) {
-        if (Math.abs(num) >= 1e9) {
-            return Math.sign(num)*((Math.abs(num)/1e9).toFixed(1)) + 'b'
-        } else if (Math.abs(num) >= 1e6) {
-            return Math.sign(num)*((Math.abs(num)/1e6).toFixed(1)) + 'm'
-        } else if (Math.abs(num) >= 1e3) {
-            return Math.sign(num)*((Math.abs(num)/1e3).toFixed(1)) + 'k'
-        } else {
-            return num
-        }
-    }
-
-    function bib_badge2str(bib_badge) {
-        let badge2emoji = {
-            'skimmed': '🪫',
-            'read': '🔋',
-            'seminal': '💡',
-            'important': '📌',
-            'work-well': '👍',
-		    'widely-used': '🔧',
-            'insightful': '🧠',
-        }
-
-        return (dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
-    }
-
-    function draw_paper(p, id_dict, commands) {
-        let badge_str = bib_badge2str(p.bib_badge)
-        let cite_str = (p.bib_cites != null)?(`[${to_short_num(p.bib_cites)}]`):('')
-        let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
-        let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
-
-        // set class name according to how many times an item appears in the thread
-        let bib_id = ''
-
-        if (id_dict[p.bib_id] === undefined) {
-            id_dict[p.bib_id] = 1
-            bib_id = p.bib_id
-        } else {
-            id_dict[p.bib_id] += 1
-            bib_id = `${p.bib_id}-${id_dict[p.bib_id]}`
-        }
-
-        // add class definition to mermaid commands
-        commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
-        
-        return bib_id
-    }
 
     function draw_branch(name, node, start, mode, layer) {
         if (max_depth != null && layer > max_depth) {
@@ -113,7 +53,7 @@ if (current_file.no_flow != true) {
                 if (mode == 'downward') {
                     // draw downward branch items
                     for (let p of sub_node) {
-                        bib_id = draw_paper(p, id_dict, commands)
+                        bib_id = PaperThread.paper_node(dv, p, id_dict, commands)
                         name_str = (name.length == 0)?(''):(`: ${name}`)
                         commands.push(`${current} --> ${bib_id}${name_str}`)
                         current = bib_id
@@ -121,7 +61,7 @@ if (current_file.no_flow != true) {
                 } else if (mode == 'upward') {
                     // draw upward branch items
                     for (let p of sub_node.toReversed()) {
-                        let bib_id = draw_paper(p, id_dict, commands)
+                        let bib_id = PaperThread.paper_node(dv, p, id_dict, commands)
                         let name_str = (name.length == 0)?(''):(`: ${name}`)
                         commands.push(`${bib_id} --> ${current}${name_str}`)
                         current = bib_id
