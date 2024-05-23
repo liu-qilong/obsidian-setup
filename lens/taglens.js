@@ -60,4 +60,18 @@ class TagLens {
             )
         }
     }
+
+    show_thoughts(thoughts) {
+        if (thoughts.length > 0) {
+            this.dv.header(2, 'Thoughts 💡')
+            this.dv.table(
+                ['link', 'text'],
+                thoughts.map(ls => {
+                    const date = this.dv.date(this.dv.page(ls.link).date)
+                    ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
+                    return [ls.link, ls.text]
+                })
+            )
+        }
+    }
 }

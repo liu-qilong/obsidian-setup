@@ -30,14 +30,4 @@ let thoughts = dv.pages(`#Type/Diary and ${query_str}`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name) | ls.text.includes(current_tag))))
     .sort(ls => dv.date(ls.link), 'desc')
     
-if (thoughts.length > 0) {
-    dv.header(2, 'Thoughts 💡')
-    dv.table(
-        ['link', 'text'],
-        thoughts.map(ls => {
-            const date = dv.date(dv.page(ls.link).date)
-            ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
-            return [ls.link, ls.text]
-        })
-    )
-}
+TagLens.show_thoughts(thoughts)

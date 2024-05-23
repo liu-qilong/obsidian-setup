@@ -26,87 +26,114 @@ if (current_file.tags.includes('Type/Diary')) {
 	dates = Array.from({ length: duration }, (_, i) => DailyLens.days_later(startdate, i))
 }
 
-// get time statistics
-time_dict = DailyLens.time_stats(dates)
+// time stats
+class TimeChart {
+	constructor(dates, duration) {
+		this.dates = dates
+		this.duration = duration
+		this.parse_time_stats()
 
-// sum of times array
-let sum = Array.from({ length: duration }, () => 0)
-let arr_sum = Object.values(time_dict).map((arr) => {
-	sum = sum.map((value, idx) => value + arr[idx])
-	return sum
-})
-let total_time = sum.reduce((acc, val) => acc + val, 0)
-let duration_with_time_stat = sum.filter((value) => value > 0).length
-
-if (total_time > 0) {
-	dv.header(2, `Time statistics 📊 [total::${total_time.toFixed(2)}] [avg::${(total_time / duration_with_time_stat).toFixed(2)}]`)
-	
-	// time statistics bar
-	let mermaid_style = ""
-
-	if (duration < 20) {
-		mermaid_style = "%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'}}}}%%"
-		// xyChart/backgroundColor: background color
-		// xyChart/plotColorPalette: plot color palette
-	} else {
-		mermaid_style = "%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'}}}}%%"
-		// xyChart/xAxis/showLabel: show x-axis label or not
-		// themeVariables/xyChart/backgroundColor: background color
-		// xyChart/plotColorPalette: plot color palette
-	}
-	
-	let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
-	commands.push(`title ${Object.keys(time_dict).join('-')}`)
-	commands.push(`y-axis "Time (h) ${Object.keys(time_dict).join('/')}" 0 --> ${Math.max(...arr_sum.flat())}`)
-
-	
-	if (current_file.tags.includes('Type/Diary')) {
-		commands.push('x-axis [today]')
-	} else if (current_file.tags.includes('Type/Week')) {
-		commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
-	} else {
-		commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
+		if (this.total_time > 0) {
+			this.chart()
+			this.table()
+		}
 	}
 
-	for (let arr of arr_sum.reverse()) {
-		commands.push(`bar [${arr}]`)
+	parse_time_stats() {
+		// get time_dict {type: time_array}
+		this.time_dict = DailyLens.time_stats(this.dates)
+
+		// create accumulative time arrays
+		// [
+		//    1st type time_array,
+		//    sum of 1st 2 types time_array,
+		//    ...
+		// ]
+		let sum = Array.from({ length: duration }, () => 0)
+		this.arr_sum = Object.values(this.time_dict).map(
+			(arr) => {
+				sum = sum.map((value, idx) => value + arr[idx])
+				return sum
+			})
+
+		// calculate the total time and the number of days with time statistics
+		this.total_time = sum.reduce((acc, val) => acc + val, 0)
+		this.duration_with_time_stat = sum.filter((value) => value > 0).length
 	}
 
-	dv.paragraph(commands.join('\n'))
+	chart() {
+		dv.header(2, `Time statistics 📊 [total::${this.total_time.toFixed(2)}] [avg::${(this.total_time / this.duration_with_time_stat).toFixed(2)}]`)
 
-	// time statistics bar
-	let time_tab_header
-	let time_tab_avg
+		let mermaid_style = ""
 
-	if (duration > 1) {
-		time_tab_header = ['total & avg']
-		time_tab_avg = [(total_time / duration_with_time_stat).toFixed(2)]
-	} else {
-		time_tab_header = ['total']
-		time_tab_avg = []
+		if (duration <= 7) {
+			mermaid_style = `%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '${DailyLens.color_palette}'}}}}%%`
+			// xyChart/backgroundColor: background color
+			// xyChart/plotColorPalette: plot color palette
+		} else {
+			mermaid_style = `%%{init: {'xyChart': {'xAxis': {'showLabel': false}}, 'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '${DailyLens.color_palette}'}}}}%%`
+			// xyChart/xAxis/showLabel: show x-axis label or not
+			// themeVariables/xyChart/backgroundColor: background color
+			// xyChart/plotColorPalette: plot color palette
+		}
+
+		let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
+		commands.push(`title ${Object.keys(this.time_dict).join('-')}`)
+		commands.push(`y-axis "Time (h) ${Object.keys(this.time_dict).join('/')}" 0 --> ${Math.max(...this.arr_sum.flat())}`)
+
+		
+		if (current_file.tags.includes('Type/Diary')) {
+			commands.push('x-axis [today]')
+		} else if (current_file.tags.includes('Type/Week')) {
+			commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
+		} else {
+			commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
+		}
+
+		for (let arr of this.arr_sum.reverse()) {
+			commands.push(`bar [${arr}]`)
+		}
+
+		dv.paragraph(commands.join('\n'))
 	}
 
-	let time_tab_total = [total_time.toFixed(2)]
-	
-	for (let [key, value] of Object.entries(time_dict)) {
-		let this_total = value.reduce((acc, val) => acc + val, 0)
-		time_tab_header.push(`${key} (h)`)
-		time_tab_total.push(this_total.toFixed(2))
-		time_tab_avg.push((this_total / duration_with_time_stat).toFixed(2))
-	}
+	table() {
+		let tab_header
 
-	if (duration > 1) {
-		dv.table(
-			time_tab_header,
-			[time_tab_total, time_tab_avg],
-		)
-	} else {
-		dv.table(
-			time_tab_header,
-			[time_tab_total],
-		)
+		// first column
+		if (this.duration > 1) {
+			tab_header = ['total & avg']
+		} else {
+			tab_header = ['total']
+		}
+
+		let tab_total = [this.total_time.toFixed(2)]
+		let tab_avg = [(this.total_time / this.duration_with_time_stat).toFixed(2)]
+		
+		// type columns
+		for (let [type, value] of Object.entries(this.time_dict)) {
+			let type_total = value.reduce((acc, val) => acc + val, 0)
+			tab_header.push(`${type} (h)`)
+			tab_total.push(type_total.toFixed(2))
+			tab_avg.push((type_total / this.duration_with_time_stat).toFixed(2))
+		}
+
+		// plot table
+		if (duration > 1) {
+			dv.table(
+				tab_header,
+				[tab_total, tab_avg],
+			)
+		} else {
+			dv.table(
+				tab_header,
+				[tab_total],
+			)
+		}
 	}
 }
+
+new TimeChart(dates, duration)
 
 // pages created/updated during this period separated by type
 for (let tag_name of Object.keys(DailyLens.tag_dict)) {
@@ -170,14 +197,4 @@ for (let date of dates.reverse()) {
 	}
 }
     
-if (thoughts.length > 0) {
-    dv.header(2, 'Thoughts 💡')
-    dv.table(
-        ['link', 'text'],
-        thoughts.map(ls => {
-            const date = dv.date(dv.page(ls.link).date)
-            ls.link.display = `${date.monthLong} ${date.day}, ${date.year}`
-            return [ls.link, ls.text]
-        })
-    )
-}
+TagLens.show_thoughts(thoughts)

@@ -1,6 +1,8 @@
 class DailyLens {
     diary_folder = 'review/diary'
 
+    color_palette = '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'
+
     tag_dict = {
         'Type/Paper': {
             'show_name': 'Papers 📃',
@@ -18,7 +20,7 @@ class DailyLens {
         this.dv = dv
     }
 
-    // date operations
+    // dates
     days_later(date_str, days) {
         let date = new Date(date_str)
         date.setDate(date.getDate() + days)
@@ -57,6 +59,7 @@ class DailyLens {
 
     // time stats
     time_stats(dates) {
+        /* return {type: time_array} */
         let date_time_dict = {}
         let entry_set = new Set()
         
