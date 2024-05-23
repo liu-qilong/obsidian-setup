@@ -2,8 +2,9 @@ class PaperThread {
     list_style = 'fill:#bbbbbba0, stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
     paper_embed_style = 'max-width:200px;max-height:200px;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
 
-    set_up(dv) {
+    set_up(dv, TagLens) {
         this.dv = dv
+        this.TagLens = TagLens
     }
 
     // thread view related
@@ -25,17 +26,7 @@ class PaperThread {
         let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
         thread_id_dict[tag] = thread_id
 
-        // search for thread title
-        let thread_title = ''
-        let thread_path = ''
-
-        for (let thread of this.dv.pages('#Type/Thread')) {
-            if (thread.file.aliases[0] === `#${tag}`) {
-                thread_title = thread.file.name
-                thread_path = thread.file.path
-                break
-            }
-        }
+        let [thread_title, thread_path] = this.TagLens.get_tag_title_path('#Type/Thread', `#${tag}`)
 
         // draw thread node
         let branch_tag = tag.replace(`${source_tag}/`, '')

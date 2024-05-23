@@ -1,6 +1,4 @@
 class DailyLens {
-    diary_folder = 'review/diary'
-
     color_palette = '#fbcd9ba0, #bbbbbba0, #e18683a0, #037d7ea0, #ffffffa0'
 
     tag_dict = {
@@ -66,7 +64,7 @@ class DailyLens {
         for (let date of dates) {
             date_time_dict[date] = {}
             try {
-                for (let [key, value] of Object.entries(this.dv.page(`${this.diary_folder}/${date}.md`))) {
+                for (let [key, value] of Object.entries(this.dv.page(date))) {
                     if (key.includes('time_')) {
                         entry_set.add(key.replace('time_', ''))
                         date_time_dict[date][key.replace('time_', '')] = this.timestr2hour(value)

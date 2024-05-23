@@ -1,6 +1,6 @@
 const {PaperThread} = await cJS()
-PaperThread.set_up(dv)
 const {TagLens} = await cJS()
+PaperThread.set_up(dv, TagLens)
 TagLens.set_up(dv, PaperThread)
 
 const current_file = dv.current()
@@ -91,13 +91,16 @@ class ThreadView {
 
                     if (name.length != 0 & bib_id_ls.length != 0) {
                         // draw box around sub branch
-                        let thread_path = TagLens.get_tag_path('#Type/Thread', tag)
+                        let [thread_title, thread_path] = TagLens.get_tag_title_path('#Type/Thread', `#${tag}`)
+
                         let link_str = (thread_path != '')?(`<a class="internal-link" data-href="${thread_path}">${name}</a>`):(name)
                         obj.commands.push(`subgraph ${tag} ["${link_str}"]\n`)
                         obj.commands.push(bib_id_ls.map((id) => id).join('\n'))
                         obj.commands.push('end')
                     }
                 } else {
+                    let sub_tag = `${tag}/${sub_name}`
+
                     if (node.__items__.length > 0 & sub_node.__items__.length > 0) {
                         // if current branch and sub branch both have items
                         // adjust the current drawing item to the last item in current branch
@@ -135,7 +138,7 @@ class ThreadView {
                         recursive_draw(obj, sub_name, `${tag}/${sub_name}`, sub_node, current, 'upward', layer + 1)
                     } else {
                         // otherwise, pass current mode to the next level
-                        recursive_draw(obj, sub_name, `${tag}/${sub_name}`, sub_node, current, mode, layer + 1)
+                        recursive_draw(obj, sub_name, sub_tag, sub_node, current, mode, layer + 1)
                     }
                 }
             }

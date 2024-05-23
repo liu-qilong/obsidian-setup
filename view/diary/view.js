@@ -1,8 +1,8 @@
 const {PaperThread} = await cJS()
-PaperThread.set_up(dv)
 const {DailyLens} = await cJS()
-DailyLens.set_up(dv)
 const {TagLens} = await cJS()
+DailyLens.set_up(dv)
+PaperThread.set_up(dv, TagLens)
 TagLens.set_up(dv, PaperThread)
 
 const current_file = dv.current()
@@ -19,7 +19,6 @@ if (current_file.tags.includes('Type/Diary')) {
 } else if (current_file.tags.includes('Type/Quarter')) {
 	dates = DailyLens.quarter_dates(current_file.year, current_file.quarter)
 	duration = dates.length
-	console.log(duration)
 } else {
 	let startdate = String(dv.current().start).split('T')[0]
 	duration = dv.current().duration
@@ -185,7 +184,7 @@ let thoughts = []
 
 for (let date of dates.reverse()) {
 	try {
-		let page = dv.page(`${DailyLens.diary_folder}/${date}.md`)
+		let page = dv.page(date)
 
 		for (let ls of page.file.lists) {
 			if (!ls.task) {

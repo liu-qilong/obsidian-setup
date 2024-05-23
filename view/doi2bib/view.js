@@ -1,4 +1,5 @@
 const {PaperThread} = await cJS()
+PaperThread.set_up(dv, TagLens)
 
 const file = dv.current()
 
