@@ -5,7 +5,7 @@ tags:
   - Type/Quarter
 ---
 
-# # _Quarter <% tp.date.now("Q") %>, <% tp.date.now("YYYY") %>_
+## _Quarter <% tp.date.now("Q") %>, <% tp.date.now("YYYY") %>_
 
 ## Goals 🎯
 

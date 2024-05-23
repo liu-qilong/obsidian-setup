@@ -33,7 +33,7 @@ class ThreadView {
     }
 
     head() {
-        dv.header(2, `Thread [total::${this.papers.length}] [skimmed::${this.papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${this.papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
+        dv.header(2, `Thread 🗞️ [total::${this.papers.length}] [skimmed::${this.papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${this.papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
         this.commands.push(`\`\`\`mermaid\nflowchart TD`)
         // statistics
@@ -160,7 +160,7 @@ if (current_file.no_flow != true) {
 
 // paper list
 if (current_file.no_list != true) {
-    dv.header(2, 'Papers')
+    dv.header(2, 'Papers 📜')
 
     papers = papers.sort(item => item.bib_year, 'asc')
 
@@ -172,7 +172,7 @@ if (current_file.no_list != true) {
 
 // bibtex
 if (current_file.no_bibtex != true) {
-    dv.header(2, 'BibTex')
+    dv.header(2, 'BibTex 💾')
 
     commands = ['```']
 

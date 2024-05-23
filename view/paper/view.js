@@ -36,7 +36,7 @@ class ThreadView {
 	}
 
 	head() {
-		dv.header(2, `Thread`)
+		dv.header(2, `Thread 🗞️`)
 	}
 
 	draw_current_paper() {
@@ -132,7 +132,7 @@ class ThreadView {
 new ThreadView(current_file, current_name)
 
 // bibtex
-dv.header(2, 'BibTex')
+dv.header(2, 'BibTex 💾')
 
 commands = ['```']
 PaperThread.paper_bibtex(current_file, commands)
@@ -140,14 +140,14 @@ dv.paragraph(commands.join('\n'))
 
 // check updates of citations counts
 if (Object.keys(current_file).includes('bib_doi')) {
-	dv.header(2, 'Cites')
-
-	let cites = await PaperThread.get_cites(current_file.bib_doi)
+	dv.header(2, 'Cites 📈')
 	
 	if (Object.keys(current_file).includes('bib_cites')) {
 		dv.paragraph('Citation counts:')
 		dv.paragraph(`\`\`\`\n${current_file.bib_cites}\n\`\`\``)
 
+		let cites = await PaperThread.get_cites(current_file.bib_doi)
+		
 		if (cites != current_file.bib_cites) {
 			dv.paragraph('==Citation counts updated==:')
 			dv.paragraph(`\`\`\`\n${cites}\n\`\`\``)

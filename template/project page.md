@@ -5,7 +5,7 @@ tags:
   - Type/Project
 ---
 
-## Todo
+## Todo 🎯
 
 ```dataviewjs
 await dv.view('obsidian-setup/view/taglens')
