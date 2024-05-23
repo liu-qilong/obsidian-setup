@@ -1,13 +1,11 @@
 class PaperThread {
-    // thread view related
-    mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
-    // nodeBorder: class box segment line color
-    // mainBkg: background color of the links' text box
-    
+    list_style = 'stroke:#f9f, stroke-width:2px, stroke-dasharray: 5 5'
+
     set_up(dv) {
         this.dv = dv
     }
 
+    // thread view related
     bib_badge2str(bib_badge) {
         let badge2emoji = {
             'skimmed': '🪫',
@@ -23,11 +21,6 @@ class PaperThread {
     }
 
     paper_node(p, id_dict, commands) {
-        let badge_str = this.bib_badge2str(p.bib_badge)
-        let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
-        let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
-        let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
-        
         // set class name according to how many times an item appears in the thread
         let bib_id = ''
 
@@ -38,9 +31,18 @@ class PaperThread {
             id_dict[p.bib_id] += 1
             bib_id = `${p.bib_id}-${id_dict[p.bib_id]}`
         }
-        
+
+        // assemble strings
+        let link_str = `<a class="internal-link" data-href="${p.file.path}">${bib_id}</a>`
+        let badge_str = this.bib_badge2str(p.bib_badge)
+        let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
+        let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
+        let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?('------------------------------\n' + p.bib_remark.map(p => `# ${p}`).join('\n')):('') 
+
         // add class definition to mermaid commands
-        commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
+        commands.push(`${bib_id}["${link_str}\n${badge_str} ${cite_str}`)
+        commands.push(`<pre style='max-width:200px;max-height:150px;text-align:left;line-height:150%;padding:5px;overflow-x:scroll;'>\n<code>${note_str}`)
+        commands.push(`${comment_str}\n</code></pre>"]`)
         
         return bib_id
     }

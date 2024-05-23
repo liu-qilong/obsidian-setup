@@ -127,6 +127,7 @@ class ThreadView {
     end() {
         this.commands.push('```')
         dv.paragraph(this.commands.join('\n'))
+        console.log(this.commands.join('\n'))
     }
 }
 
