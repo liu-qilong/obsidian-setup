@@ -1,5 +1,5 @@
 class PaperThread {
-    list_style = 'fill:#bbbbbba0, stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
+    list_style = 'stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
     paper_embed_style = 'max-width:200px;max-height:200px;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
 
     set_up(dv, TagLens) {
@@ -26,7 +26,7 @@ class PaperThread {
         let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
         thread_id_dict[tag] = thread_id
 
-        let [thread_title, thread_path] = this.TagLens.get_tag_title_path('Type/Thread', tag)
+        let [thread_title, thread_path] = this.TagLens.get_tag_page_title_path(tag)
 
         // draw thread node
         let branch_tag = (source_tag != '')?(tag.replace(`${source_tag}/`, '')):(`#${tag}`)

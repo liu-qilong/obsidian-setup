@@ -34,6 +34,9 @@ class TagLens {
         },
     }
 
+    tag2path = {}
+    tag2title = {}
+
     set_up(dv, PaperThread) {
         this.dv = dv
         this.PaperThread = PaperThread
@@ -75,13 +78,26 @@ class TagLens {
         }
     }
 
-    get_tag_title_path(type_tag, tag) {
-        for (let page of this.dv.pages(`#${type_tag}`)) {
-            if (page.file.aliases[0] === `#${tag}`) {
-                return [page.file.name, page.file.path]
+    get_tag_page_title_path(tag) {
+        if (Object.keys(this.tag2path).length === 0) {
+            // parse tag pages' paths and titles at the first call
+            console.log('parsing tag pages')
+            
+            for (let page of this.dv.pages()) {
+                if (page.file.aliases.length != 0) {
+                    if (page.file.aliases[0][0] === '#') {
+                        let page_tag = page.file.aliases[0].replace('#', '')
+                        this.tag2path[page_tag] = page.file.path
+                        this.tag2title[page_tag] = page.file.name
+                    }
+                }
             }
         }
 
-        return ['', '']
+        if (Object.keys(this.tag2path).includes(tag)) {
+            return [this.tag2title[tag], this.tag2path[tag]]
+        } else {
+            return ['', '']
+        }
     }
 }
