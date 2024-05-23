@@ -76,8 +76,8 @@ class TagLens {
     }
 
     get_tag_title_path(type_tag, tag) {
-        for (let page of this.dv.pages(type_tag)) {
-            if (page.file.aliases[0] === tag) {
+        for (let page of this.dv.pages(`#${type_tag}`)) {
+            if (page.file.aliases[0] === `#${tag}`) {
                 return [page.file.name, page.file.path]
             }
         }

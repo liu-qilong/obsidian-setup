@@ -26,11 +26,11 @@ class PaperThread {
         let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
         thread_id_dict[tag] = thread_id
 
-        let [thread_title, thread_path] = this.TagLens.get_tag_title_path('#Type/Thread', `#${tag}`)
+        let [thread_title, thread_path] = this.TagLens.get_tag_title_path('Type/Thread', tag)
 
         // draw thread node
-        let branch_tag = tag.replace(`${source_tag}/`, '')
-        let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">#${branch_tag}</a>\n`):(`#${branch_tag}\n`)
+        let branch_tag = (source_tag != '')?(tag.replace(`${source_tag}/`, '')):(`#${tag}`)
+        let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">${branch_tag}</a>\n`):(`${branch_tag}\n`)
         let title_str = (thread_title != '')?(`${thread_title}`):('')
         commands.push(`${thread_id}([${link_str}${title_str}])`)
         commands.push(`style ${thread_id} ${this.list_style}`)

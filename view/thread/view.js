@@ -91,7 +91,7 @@ class ThreadView {
 
                     if (name.length != 0 & bib_id_ls.length != 0) {
                         // draw box around sub branch
-                        let [thread_title, thread_path] = TagLens.get_tag_title_path('#Type/Thread', `#${tag}`)
+                        let [thread_title, thread_path] = TagLens.get_tag_title_path('Type/Thread', tag)
 
                         let link_str = (thread_path != '')?(`<a class="internal-link" data-href="${thread_path}">${name}</a>`):(name)
                         obj.commands.push(`subgraph ${tag} ["${link_str}"]\n`)
