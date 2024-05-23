@@ -1,3 +1,5 @@
+const {PaperThread} = await cJS()
+
 const file = dv.current()
 
 if (file.doi === null && file.bibtex === null) {
@@ -7,15 +9,7 @@ if (file.doi === null && file.bibtex === null) {
 
 	if (file.bibtex === null) {
 		// get bibtex from doi
-		async function get_bibtex(doi) {
-			return fetch(`https://doi.org/${doi}`, { headers: { Accept: "application/x-bibtex" }})
-			.then(response => response.text())
-			.catch(error => {
-				console.error('Error:', error)
-			})
-		}
-
-		bibtex = await get_bibtex(file.doi)
+		bibtex = await PaperThread.get_bibtex(file.doi)
 		dv.paragraph("_[progress] got `bibtex` from `doi` online_")
 	} else {
 		bibtex = file.bibtex
@@ -128,21 +122,14 @@ if (file.doi === null && file.bibtex === null) {
 
 		return fields
 	}
-
+	
 	const bibjson = await parse_bitex(bibtex, gen_id=true)
 	dv.paragraph("_[progress] parsed `bibtex`_")
 
 	// get citations count
 	if (file.cites === null) {
-		async function get_cites(doi) {
-			return fetch(`https://api.crossref.org/works/${doi}`)
-				.then(response => response.json())
-				.then(data => data['message']['is-referenced-by-count'])
-				.catch(error => console.error('Error:', error))
-		}
-		
 		if (Object.keys(bibjson).includes('doi')) {
-			bibjson['cites'] = await get_cites(bibjson['doi'])
+			bibjson['cites'] = await PaperThread.get_cites(bibjson['doi'])
 			dv.paragraph("_[progress] got `cites` online_")
 		}
 	} else {

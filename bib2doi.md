@@ -1,5 +1,5 @@
 ---
-doi: 
+doi: 10.1109/cvpr.2014.81
 bibtex: 
 cites:
 ---
