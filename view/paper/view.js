@@ -81,43 +81,9 @@ class ThreadView {
 		}
 
 		// draw nested threads
-		let thread_ls = dv.pages('#Type/Thread')
 		let thread_id_dict = {}
 
 		function recursive_draw(obj, tag, node, source_tag) {
-			function thread_node(tag, source_tag, thread) {
-				let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
-				thread_id_dict[tag] = thread_id
-	
-				// search for thread title
-				let thread_title = ''
-				let thread_path = ''
-	
-				for (let thread of thread_ls) {
-					if (thread.file.aliases[0] === `#${tag}`) {
-						thread_title = thread.file.name
-						thread_path = thread.file.path
-						break
-					}
-				}
-	
-				// draw thread node
-				let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">#${tag}</a>`):(`#${tag}`)
-				let title_str = (thread_title != '')?(`${thread_title}\n`):('')
-				obj.commands.push(`${thread_id}([${title_str}${link_str}])`)
-				obj.commands.push(`style ${thread_id} ${PaperThread.list_style}`)
-	
-				if (source_tag != '') {
-					let branch_tag = tag.replace(`${source_tag}/`, '')
-	
-					if (branch_tag.startsWith('pre-')) {
-						obj.commands.push(`${thread_id} ---o |${branch_tag}| ${thread_id_dict[source_tag]}`)
-					} else {
-						obj.commands.push(`${thread_id_dict[source_tag]} ---o |${branch_tag}| ${thread_id}`)
-					}
-				}
-			}
-
 			if (Object.keys(node).length === 1) {
 				// the current node only has 1 child
 				let sub_tag = Object.keys(node)[0]
@@ -126,7 +92,7 @@ class ThreadView {
 				recursive_draw(obj, `${pre_str}${sub_tag}`, sub_node, source_tag)
 			} else {
 				// the current node is a leaf node or have multiple children
-				thread_node(tag, source_tag)
+				PaperThread.thread_node(tag, source_tag, thread_id_dict, obj.commands)
 
 				for (let [sub_tag, sub_node] of Object.entries(node)) {
 					let pre_str = (tag != '')?(`${tag}/`):('')

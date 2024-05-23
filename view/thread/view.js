@@ -26,9 +26,10 @@ class ThreadView {
     head() {
         dv.header(2, `Thread [total::${this.papers.length}] [skimmed::${this.papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${this.papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
-        this.commands.push(`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`)
+        this.commands.push(`\`\`\`mermaid\nflowchart TD`)
         // statistics
-        this.commands.push(`class List {\n${this.current_name}\n#${this.current_tag}\n}`)
+        
+        PaperThread.thread_node(this.current_tag, '', {}, this.commands)
     }
 
     parse_branch() {
@@ -64,16 +65,16 @@ class ThreadView {
                         // draw downward branch items
                         for (let p of sub_node) {
                             let bib_id = PaperThread.paper_node(p, obj.id_dict, obj.commands)
-                            let name_str = (name.length == 0)?(''):(`: ${name}`)
-                            obj.commands.push(`${current} --> ${bib_id}${name_str}`)
+                            let name_str = (name.length == 0)?(''):(`|${name}|`)
+                            obj.commands.push(`${current} --> ${name_str} ${bib_id}`)
                             current = bib_id
                         }
                     } else if (mode == 'upward') {
                         // draw upward branch items
                         for (let p of sub_node.toReversed()) {
                             let bib_id = PaperThread.paper_node(p, obj.id_dict, obj.commands)
-                            let name_str = (name.length == 0)?(''):(`: ${name}`)
-                            obj.commands.push(`${bib_id} --> ${current}${name_str}`)
+                            let name_str = (name.length == 0)?(''):(`|${name}|`)
+                            obj.commands.push(`${bib_id} --> ${name_str} ${current}`)
                             current = bib_id
                         }
                     }
@@ -121,7 +122,7 @@ class ThreadView {
             }
         }
 
-        recursive_draw(this, '', this.branches, 'List', 'downward', 0)
+        recursive_draw(this, '', this.branches, 'List-1', 'downward', 0)
     }
 
     end() {
