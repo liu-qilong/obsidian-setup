@@ -1,4 +1,5 @@
 const {PaperThread} = await cJS()
+PaperThread.set_up(dv)
 
 const current_file = dv.current()
 const current_name = dv.current().file.name
@@ -10,120 +11,145 @@ if (current_file.bib_id != current_name) {
 }
 
 // thread view
-dv.header(2, 'Thread')
+class ThreadView {
+	constructor(current_file, current_name) {
+		this.current_file = current_file
+		this.current_name = current_name
+		this.commands = []
+		this.id_dict = {}
+		this.threads = {}
 
-let commands = [`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`]
-let id_dict = []
+		this.head()
+		this.draw_current_paper()
+		this.draw_linked_papers()
+		this.draw_linked_threads()
+		this.end()
+	}
 
-// draw current paper
-PaperThread.paper_node(dv, current_file, id_dict, commands)
+	head() {
+		dv.header(2, `Thread`)
+	}
 
-// draw linked papers
-function draw_link(l, p_origin, p_target) {
-	if (l.subpath != null) {
-		if (l.subpath == 'related') {
-			commands.push(`${p_origin.bib_id} <..> ${p_target.bib_id}: ${l.subpath}`)
-		} else {
-			commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}: ${l.subpath}`)
+	draw_current_paper() {
+		this.commands.push(`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`)
+		PaperThread.paper_node(this.current_file, this.id_dict, this.commands)
+	}
+
+	draw_linked_papers() {
+		function draw_link(obj, l, p_origin, p_target) {
+			if (l.subpath != null) {
+				if (l.subpath == 'related') {
+					obj.commands.push(`${p_origin.bib_id} <..> ${p_target.bib_id}: ${l.subpath}`)
+				} else {
+					obj.commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}: ${l.subpath}`)
+				}
+			} else {
+				obj.commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}`)
+			}
 		}
-	} else {
-		commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}`)
-	}
-}
 
-if (dv.isArray(current_file.bib_link)) {
-	for (let l of current_file.bib_link) {
-		PaperThread.paper_node(dv, dv.page(l), id_dict, commands)
-		draw_link(l, dv.page(l), current_file)
-	}
-}
+		// from current paper to linked papers
+		if (dv.isArray(this.current_file.bib_link)) {
+			for (let l of this.current_file.bib_link) {
+				PaperThread.paper_node(dv.page(l), this.id_dict, this.commands)
+				draw_link(this, l, dv.page(l), this.current_file)
+			}
+		}
 
-for (p of dv.pages('#Type/Paper and [[]]')) {
-	// search all inward linked papers
-	if (dv.isArray(p.bib_link)) {
-		for (let l of p.bib_link) {
-			// go through these papers bib_link
-			if (dv.page(l).bib_id === current_file.bib_id) {
-				// find  the entries that link to the current paper and draw paper links 
-				PaperThread.paper_node(dv, p, id_dict, commands)
-				draw_link(l, current_file, p)
+		// from linked papers to current paper
+		for (let p of dv.pages('#Type/Paper and [[]]')) {
+			// search all inward linked papers
+			if (dv.isArray(p.bib_link)) {
+				for (let l of p.bib_link) {
+					// go through these papers bib_link
+					if (dv.page(l).bib_id === this.current_file.bib_id) {
+						// find  the entries that link to the current paper and draw paper links 
+						PaperThread.paper_node(p, this.id_dict, this.commands)
+						draw_link(this, l, this.current_file, p)
+					}
+				}
 			}
 		}
 	}
-}
 
-// parse nested threads
-let threads = {}
+	draw_linked_threads() {
+		// parse nested threads
+		for (let tag of this.current_file.tags) {
+			if (tag.split('/')[0] === 'Thread') {
+				PaperThread.setup_nested_dict(this.threads, tag.split('/'))
+			}
+		}
 
-for (let tag of current_file.tags) {
-	if (tag.split('/')[0] === 'Thread') {
-		PaperThread.setup_nested_dict(threads, tag.split('/'))
-	}
-}
+		// draw nested threads
+		let thread_ls = dv.pages('#Type/Thread')
+		let thread_id_dict = {}
 
-// draw nested threads
-let thread_id_dict = {}
-let thread_ls = dv.pages('#Type/Thread')
+		function recursive_draw(obj, tag, node, source_tag) {
+			function thread_node(tag, source_tag) {
+				let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
+				thread_id_dict[tag] = thread_id
+	
+				// search for thread title
+				let thread_title = ''
+	
+				for (let thread of thread_ls) {
+					if (thread.file.aliases[0] === `#${tag}`) {
+						thread_title = thread.file.name
+						break
+					}
+				}
+	
+				// draw thread node
+				obj.commands.push(`class ${thread_id} {\n${(thread_title != '')?(`${thread_title}\n`):('')}#${tag}\n}`)
+	
+				if (source_tag != '') {
+					let branch_tag = tag.replace(`${source_tag}/`, '')
+	
+					if (branch_tag.startsWith('pre-')) {
+						obj.commands.push(`${thread_id} -- ${thread_id_dict[source_tag]}: ${branch_tag}`)
+					} else {
+						obj.commands.push(`${thread_id_dict[source_tag]} -- ${thread_id}: ${branch_tag}`)
+					}
+				}
+			}
 
-function thread_node(tag, source_tag, commands) {
-	let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
-	thread_id_dict[tag] = thread_id
+			if (Object.keys(node).length === 1) {
+				// the current node only has 1 child
+				let sub_tag = Object.keys(node)[0]
+				let sub_node = Object.values(node)[0]
+				let pre_str = (tag != '')?(`${tag}/`):('')
+				recursive_draw(obj, `${pre_str}${sub_tag}`, sub_node, source_tag)
+			} else {
+				// the current node is a leaf node or have multiple children
+				thread_node(tag, source_tag)
 
-	// search for thread title
-	let thread_title = ''
+				for (let [sub_tag, sub_node] of Object.entries(node)) {
+					let pre_str = (tag != '')?(`${tag}/`):('')
+					recursive_draw(obj, `${pre_str}${sub_tag}`, sub_node, tag)
+				}
+			}
+		}
 
-	for (let thread of thread_ls) {
-		if (thread.file.aliases[0] === `#${tag}`) {
-			thread_title = thread.file.name
-			break
+		// recursively draw threads
+		if (Object.keys(this.threads).length > 0) {
+			recursive_draw(this, '', this.threads, '')
+		}
+
+		// draw links to threads
+		for (let tag of current_file.tags) {
+			if (tag.split('/')[0] === 'Thread') {
+				this.commands.push(`${thread_id_dict[tag]} -- ${current_file.bib_id}`)
+			}
 		}
 	}
 
-	// draw thread node
-	commands.push(`class ${thread_id} {\n${(thread_title != '')?(`${thread_title}\n`):('')}#${tag}\n}`)
-
-	if (source_tag != '') {
-		let branch_tag = tag.replace(`${source_tag}/`, '')
-
-		if (branch_tag.startsWith('pre-')) {
-			commands.push(`${thread_id} -- ${thread_id_dict[source_tag]}: ${branch_tag}`)
-		} else {
-			commands.push(`${thread_id_dict[source_tag]} -- ${thread_id}: ${branch_tag}`)
-		}
+	end() {
+		this.commands.push('```')
+		dv.paragraph(this.commands.join('\n'))
 	}
 }
 
-function draw_threads(tag, node, source_tag) {
-	if (Object.keys(node).length === 1) {
-		// the current node only has 1 child
-		let sub_tag = Object.keys(node)[0]
-		let sub_node = Object.values(node)[0]
-		let pre_str = (tag != '')?(`${tag}/`):('')
-		draw_threads(`${pre_str}${sub_tag}`, sub_node, source_tag)
-	} else {
-		// the current node is a leaf node or have multiple children
-		thread_node(tag, source_tag, commands)
-
-		for (let [sub_tag, sub_node] of Object.entries(node)) {
-			pre_str = (tag != '')?(`${tag}/`):('')
-			draw_threads(`${pre_str}${sub_tag}`, sub_node, tag)
-		}
-	}
-}
-
-if (Object.keys(threads).length > 0) {
-	draw_threads('', threads, '')
-}
-
-// draw links to threads
-for (let tag of current_file.tags) {
-	if (tag.split('/')[0] === 'Thread') {
-		commands.push(`${thread_id_dict[tag]} -- ${current_file.bib_id}`)
-	}
-}
-
-commands.push('```')
-dv.paragraph(commands.join('\n'))
+new ThreadView(current_file, current_name)
 
 // bibtex
 dv.header(2, 'BibTex')

@@ -34,20 +34,25 @@ class TagLens {
         },
     }
 
-    show_related(dv, show_name, show_vars, pages, PaperThread) {
+    set_up(dv, PaperThread) {
+        this.dv = dv
+        this.PaperThread = PaperThread
+    }
+
+    show_related(show_name, show_vars, pages) {
         if (pages.length > 0) {
-            dv.header(2, show_name)
-            dv.table(
+            this.dv.header(2, show_name)
+            this.dv.table(
                 ['link'].concat(show_vars),
                 pages.map(p => [p.file.link].concat(show_vars.map(v => {
                     if (v === 'update') {
-                        if (dv.isArray(p[v])) {
+                        if (this.dv.isArray(p[v])) {
                             return p[v][p[v].length - 1]
                         } else {
                             return null
                         }
                     } else if (v === 'bib_badge') {
-                        return PaperThread.bib_badge2str(dv, p[v])
+                        return this.PaperThread.bib_badge2str(this.dv, p[v])
                     } else {
                         return p[v]
                     }

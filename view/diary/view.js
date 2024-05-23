@@ -1,6 +1,9 @@
 const {PaperThread} = await cJS()
 const {DailyLens} = await cJS()
 const {TagLens} = await cJS()
+TagLens.set_up(dv, PaperThread)
+DailyLens.set_up(dv)
+PaperThread.set_up(dv)
 
 const current_file = dv.current()
 
@@ -24,7 +27,7 @@ if (current_file.tags.includes('Type/Diary')) {
 }
 
 // get time statistics
-time_dict = DailyLens.time_stats(dv, dates)
+time_dict = DailyLens.time_stats(dates)
 
 // sum of times array
 let sum = Array.from({ length: duration }, () => 0)
@@ -131,7 +134,7 @@ for (let tag_name of Object.keys(DailyLens.tag_dict)) {
 			}
 		})
 	
-		TagLens.show_related(dv, show_name, show_vars, pages, PaperThread)
+		TagLens.show_related(show_name, show_vars, pages)
 }
 
 // tasks completed during this period

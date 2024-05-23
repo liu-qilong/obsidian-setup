@@ -14,6 +14,10 @@ class DailyLens {
         },
     }
 
+    set_up(dv) {
+        this.dv = dv
+    }
+
     // date operations
     days_later(date_str, days) {
         let date = new Date(date_str)
@@ -52,14 +56,14 @@ class DailyLens {
     }
 
     // time stats
-    time_stats(dv, dates) {
+    time_stats(dates) {
         let date_time_dict = {}
         let entry_set = new Set()
         
         for (let date of dates) {
             date_time_dict[date] = {}
             try {
-                for (let [key, value] of Object.entries(dv.page(`${this.diary_folder}/${date}.md`))) {
+                for (let [key, value] of Object.entries(this.dv.page(`${this.diary_folder}/${date}.md`))) {
                     if (key.includes('time_')) {
                         entry_set.add(key.replace('time_', ''))
                         date_time_dict[date][key.replace('time_', '')] = this.timestr2hour(value)

@@ -1,5 +1,6 @@
 const {TagLens} = await cJS()
 const {PaperThread} = await cJS()
+TagLens.set_up(dv, PaperThread)
 
 let current_name = dv.current().file.name
 let current_tag
@@ -21,7 +22,7 @@ for (let tag_name of Object.keys(TagLens.tag_dict)) {
     let show_vars = TagLens.tag_dict[tag_name]['show_vars']
     let pages = dv.pages(`#${tag_name} and ${query_str}`)
 
-    TagLens.show_related(dv, show_name, show_vars, pages, PaperThread)
+    TagLens.show_related(show_name, show_vars, pages)
 }
 
 // tagged/linked mentions in diary notes

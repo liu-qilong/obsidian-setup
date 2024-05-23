@@ -4,7 +4,11 @@ class PaperThread {
     // nodeBorder: class box segment line color
     // mainBkg: background color of the links' text box
     
-    bib_badge2str(dv, bib_badge) {
+    set_up(dv) {
+        this.dv = dv
+    }
+
+    bib_badge2str(bib_badge) {
         let badge2emoji = {
             'skimmed': '🪫',
             'read': '🔋',
@@ -15,14 +19,14 @@ class PaperThread {
             'insightful': '🧠',
         }
     
-        return (dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
+        return (this.dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
     }
 
-    paper_node(dv, p, id_dict, commands) {
-        let badge_str = this.bib_badge2str(dv, p.bib_badge)
+    paper_node(p, id_dict, commands) {
+        let badge_str = this.bib_badge2str(this.dv, p.bib_badge)
         let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
-        let note_str = (dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
-        let comment_str = (dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
+        let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
+        let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
         
         // set class name according to how many times an item appears in the thread
         let bib_id = ''
