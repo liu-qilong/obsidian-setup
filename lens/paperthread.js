@@ -1,13 +1,12 @@
 class PaperThread {
-    // thread view related
-    mermaid_style = "%%{ init: { 'themeVariables': { 'nodeBorder': '#00000000', 'mainBkg': '#00000000' }}}%%"
-    // nodeBorder: class box segment line color
-    // mainBkg: background color of the links' text box
-    
+    list_style = 'stroke:#f9f, stroke-width:2px, stroke-dasharray: 5 5'
+    paper_embed_style = 'max-width:200px;max-height:200px;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
+
     set_up(dv) {
         this.dv = dv
     }
 
+    // thread view related
     bib_badge2str(bib_badge) {
         let badge2emoji = {
             'skimmed': '🪫',
@@ -22,12 +21,40 @@ class PaperThread {
         return (this.dv.isArray(bib_badge) && bib_badge.length > 0)?(bib_badge.map(badge => badge2emoji[badge]).join('')):('')
     }
 
+    thread_node(tag, source_tag, thread_id_dict, commands) {
+        let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
+        thread_id_dict[tag] = thread_id
+
+        // search for thread title
+        let thread_title = ''
+        let thread_path = ''
+
+        for (let thread of this.dv.pages('#Type/Thread')) {
+            if (thread.file.aliases[0] === `#${tag}`) {
+                thread_title = thread.file.name
+                thread_path = thread.file.path
+                break
+            }
+        }
+
+        // draw thread node
+        let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">#${tag}</a>`):(`#${tag}`)
+        let title_str = (thread_title != '')?(`${thread_title}\n`):('')
+        commands.push(`${thread_id}([${title_str}${link_str}])`)
+        commands.push(`style ${thread_id} ${this.list_style}`)
+
+        if (source_tag != '') {
+            let branch_tag = tag.replace(`${source_tag}/`, '')
+
+            if (branch_tag.startsWith('pre-')) {
+                commands.push(`${thread_id} ---o |${branch_tag}| ${thread_id_dict[source_tag]}`)
+            } else {
+                commands.push(`${thread_id_dict[source_tag]} ---o |${branch_tag}| ${thread_id}`)
+            }
+        }
+    }
+
     paper_node(p, id_dict, commands) {
-        let badge_str = this.bib_badge2str(p.bib_badge)
-        let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
-        let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
-        let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
-        
         // set class name according to how many times an item appears in the thread
         let bib_id = ''
 
@@ -38,9 +65,20 @@ class PaperThread {
             id_dict[p.bib_id] += 1
             bib_id = `${p.bib_id}-${id_dict[p.bib_id]}`
         }
-        
+
+        // assemble strings
+        let seg_line = '------------------------------'
+        let link_str = `<a class="internal-link" data-href="${p.file.path}">${bib_id}</a>`
+        let badge_str = this.bib_badge2str(p.bib_badge)
+        let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
+        let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(`${seg_line}\n` + p.bib_note.join('\n')):('')
+        let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(`${seg_line}\n` + p.bib_remark.map(p => `# ${p}`).join('\n')):('') 
+
         // add class definition to mermaid commands
-        commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
+        commands.push(`\n${bib_id}["${link_str}\n${badge_str} ${cite_str}`)
+        commands.push(`<pre style='${this.paper_embed_style}'>\n<code>${p.bib_title}`)
+        commands.push(note_str)
+        commands.push(`${comment_str}\n</code></pre>"]\n`)
         
         return bib_id
     }

@@ -31,7 +31,7 @@ class ThreadView {
 	}
 
 	draw_current_paper() {
-		this.commands.push(`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`)
+		this.commands.push(`\`\`\`mermaid\nflowchart TD`)
 		PaperThread.paper_node(this.current_file, this.id_dict, this.commands)
 	}
 
@@ -39,12 +39,12 @@ class ThreadView {
 		function draw_link(obj, l, p_origin, p_target) {
 			if (l.subpath != null) {
 				if (l.subpath == 'related') {
-					obj.commands.push(`${p_origin.bib_id} <..> ${p_target.bib_id}: ${l.subpath}`)
+					obj.commands.push(`${p_origin.bib_id} <-..-> |${l.subpath}| ${p_target.bib_id}`)
 				} else {
-					obj.commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}: ${l.subpath}`)
+					obj.commands.push(`${p_origin.bib_id} -..-> |${l.subpath}| ${p_target.bib_id}`)
 				}
 			} else {
-				obj.commands.push(`${p_origin.bib_id} ..> ${p_target.bib_id}`)
+				obj.commands.push(`${p_origin.bib_id} -..-> ${p_target.bib_id}`)
 			}
 		}
 
@@ -81,38 +81,9 @@ class ThreadView {
 		}
 
 		// draw nested threads
-		let thread_ls = dv.pages('#Type/Thread')
 		let thread_id_dict = {}
 
 		function recursive_draw(obj, tag, node, source_tag) {
-			function thread_node(tag, source_tag) {
-				let thread_id = `List-${Object.keys(thread_id_dict).length + 1}`
-				thread_id_dict[tag] = thread_id
-	
-				// search for thread title
-				let thread_title = ''
-	
-				for (let thread of thread_ls) {
-					if (thread.file.aliases[0] === `#${tag}`) {
-						thread_title = thread.file.name
-						break
-					}
-				}
-	
-				// draw thread node
-				obj.commands.push(`class ${thread_id} {\n${(thread_title != '')?(`${thread_title}\n`):('')}#${tag}\n}`)
-	
-				if (source_tag != '') {
-					let branch_tag = tag.replace(`${source_tag}/`, '')
-	
-					if (branch_tag.startsWith('pre-')) {
-						obj.commands.push(`${thread_id} -- ${thread_id_dict[source_tag]}: ${branch_tag}`)
-					} else {
-						obj.commands.push(`${thread_id_dict[source_tag]} -- ${thread_id}: ${branch_tag}`)
-					}
-				}
-			}
-
 			if (Object.keys(node).length === 1) {
 				// the current node only has 1 child
 				let sub_tag = Object.keys(node)[0]
@@ -121,7 +92,7 @@ class ThreadView {
 				recursive_draw(obj, `${pre_str}${sub_tag}`, sub_node, source_tag)
 			} else {
 				// the current node is a leaf node or have multiple children
-				thread_node(tag, source_tag)
+				PaperThread.thread_node(tag, source_tag, thread_id_dict, obj.commands)
 
 				for (let [sub_tag, sub_node] of Object.entries(node)) {
 					let pre_str = (tag != '')?(`${tag}/`):('')
@@ -138,7 +109,7 @@ class ThreadView {
 		// draw links to threads
 		for (let tag of current_file.tags) {
 			if (tag.split('/')[0] === 'Thread') {
-				this.commands.push(`${thread_id_dict[tag]} -- ${current_file.bib_id}`)
+				this.commands.push(`${thread_id_dict[tag]} ---o ${current_file.bib_id}`)
 			}
 		}
 	}

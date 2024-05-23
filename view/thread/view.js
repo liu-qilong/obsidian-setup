@@ -1,5 +1,7 @@
 const {PaperThread} = await cJS()
 PaperThread.set_up(dv)
+const {TagLens} = await cJS()
+TagLens.set_up(dv, PaperThread)
 
 const current_file = dv.current()
 const current_name = current_file.file.name
@@ -26,9 +28,10 @@ class ThreadView {
     head() {
         dv.header(2, `Thread [total::${this.papers.length}] [skimmed::${this.papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${this.papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
-        this.commands.push(`\`\`\`mermaid\n${PaperThread.mermaid_style}\nclassDiagram`)
+        this.commands.push(`\`\`\`mermaid\nflowchart TD`)
         // statistics
-        this.commands.push(`class List {\n${this.current_name}\n#${this.current_tag}\n}`)
+        
+        PaperThread.thread_node(this.current_tag, '', {}, this.commands)
     }
 
     parse_branch() {
@@ -51,31 +54,41 @@ class ThreadView {
     }
 
     draw_branch() {
-        function recursive_draw(obj, name, node, start, mode, layer) {
+        function recursive_draw(obj, name, tag, node, start, mode, layer) {
             if (max_depth != null && layer > max_depth) {
                 return
             }
             
             for (let [sub_name, sub_node] of Object.entries(node)) {
                 let current = start
+                let bib_id_ls = []
     
                 if (sub_name == '__items__') {
                     if (mode == 'downward') {
                         // draw downward branch items
                         for (let p of sub_node) {
                             let bib_id = PaperThread.paper_node(p, obj.id_dict, obj.commands)
-                            let name_str = (name.length == 0)?(''):(`: ${name}`)
-                            obj.commands.push(`${current} --> ${bib_id}${name_str}`)
+                            bib_id_ls.push(bib_id)
+                            obj.commands.push(`${current} --> ${bib_id}`)
                             current = bib_id
                         }
                     } else if (mode == 'upward') {
                         // draw upward branch items
                         for (let p of sub_node.toReversed()) {
                             let bib_id = PaperThread.paper_node(p, obj.id_dict, obj.commands)
-                            let name_str = (name.length == 0)?(''):(`: ${name}`)
-                            obj.commands.push(`${bib_id} --> ${current}${name_str}`)
+                            bib_id_ls.push(bib_id)
+                            obj.commands.push(`${bib_id} --> ${current}`)
                             current = bib_id
                         }
+                    }
+
+                    if (name.length != 0 & bib_id_ls.length != 0) {
+                        // draw box around sub branch
+                        let thread_path = TagLens.get_tag_path('#Type/Thread', tag)
+                        let link_str = (thread_path != '')?(`<a class="internal-link" data-href="${thread_path}">${name}</a>`):(name)
+                        obj.commands.push(`subgraph ${tag} ["${link_str}"]\n`)
+                        obj.commands.push(bib_id_ls.map((id) => id).join('\n'))
+                        obj.commands.push('end')
                     }
                 } else {
                     if (node.__items__.length > 0 & sub_node.__items__.length > 0) {
@@ -112,16 +125,16 @@ class ThreadView {
                     
                     if (sub_name.startsWith('pre-')) {
                         // if sub branch name contains 'pre-', set drawing mode as upward
-                        recursive_draw(obj, sub_name, sub_node, current, 'upward', layer + 1)
+                        recursive_draw(obj, sub_name, `${tag}/${sub_name}`, sub_node, current, 'upward', layer + 1)
                     } else {
                         // otherwise, pass current mode to the next level
-                        recursive_draw(obj, sub_name, sub_node, current, mode, layer + 1)
+                        recursive_draw(obj, sub_name, `${tag}/${sub_name}`, sub_node, current, mode, layer + 1)
                     }
                 }
             }
         }
 
-        recursive_draw(this, '', this.branches, 'List', 'downward', 0)
+        recursive_draw(this, '', current_tag, this.branches, 'List-1', 'downward', 0)
     }
 
     end() {

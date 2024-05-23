@@ -1,5 +1,6 @@
-const {TagLens} = await cJS()
 const {PaperThread} = await cJS()
+PaperThread.set_up(dv)
+const {TagLens} = await cJS()
 TagLens.set_up(dv, PaperThread)
 
 let current_name = dv.current().file.name
