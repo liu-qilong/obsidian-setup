@@ -52,7 +52,7 @@ class TagLens {
                             return null
                         }
                     } else if (v === 'bib_badge') {
-                        return this.PaperThread.bib_badge2str(this.dv, p[v])
+                        return this.PaperThread.bib_badge2str(p[v])
                     } else {
                         return p[v]
                     }

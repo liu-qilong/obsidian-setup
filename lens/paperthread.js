@@ -23,7 +23,7 @@ class PaperThread {
     }
 
     paper_node(p, id_dict, commands) {
-        let badge_str = this.bib_badge2str(this.dv, p.bib_badge)
+        let badge_str = this.bib_badge2str(p.bib_badge)
         let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
         let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(p.bib_note.join('\n')):('')
         let comment_str = (this.dv.isArray(p.bib_remark) && p.bib_remark.length > 0)?(p.bib_remark.map(p => `*(${p})`).join('\n')):('')
@@ -38,7 +38,7 @@ class PaperThread {
             id_dict[p.bib_id] += 1
             bib_id = `${p.bib_id}-${id_dict[p.bib_id]}`
         }
-
+        
         // add class definition to mermaid commands
         commands.push(`class ${bib_id} {\n${badge_str} ${cite_str}\n${note_str}\n${comment_str}}`) 
         
