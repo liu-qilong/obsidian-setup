@@ -8,6 +8,13 @@ const current_name = current_file.file.name
 const current_tag = current_file.aliases[0].replace('#', '')
 const max_depth = current_file.max_depth
 
+// choose page fit or scroll
+if (current_file.scroll) {
+    dv.container.classList.add("page_scroll_class")
+} else {
+    dv.container.classList.add("page_fit_class")
+}
+
 let papers = dv.pages(`#Type/Paper and #${current_tag}`).sort(p => p.bib_year, 'asc')
 
 // thread view

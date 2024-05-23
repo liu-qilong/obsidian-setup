@@ -4,6 +4,13 @@ PaperThread.set_up(dv)
 const current_file = dv.current()
 const current_name = dv.current().file.name
 
+// choose page fit or scroll
+if (current_file.scroll) {
+    dv.container.classList.add("page_scroll_class")
+} else {
+    dv.container.classList.add("page_fit_class")
+}
+
 // check consistency between bib_id and file name
 if (current_file.bib_id != current_name) {
 	dv.header(2, '==Warning==')
@@ -109,7 +116,7 @@ class ThreadView {
 		// draw links to threads
 		for (let tag of current_file.tags) {
 			if (tag.split('/')[0] === 'Thread') {
-				this.commands.push(`${thread_id_dict[tag]} ---o ${current_file.bib_id}`)
+				this.commands.push(`${thread_id_dict[tag]} ---> ${current_file.bib_id}`)
 			}
 		}
 	}

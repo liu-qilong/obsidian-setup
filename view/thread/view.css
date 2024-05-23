@@ -1,0 +1,23 @@
+.markdown-preview-view .page_fit_class .mermaid {
+    display: flex;
+    justify-content: center;
+    max-height: 100%;
+    border: none;
+}
+
+.markdown-preview-view .page_scroll_class .mermaid {
+    max-height: 1000px;
+    justify-content: center;
+    overflow-x: scroll;
+    overflow-y: scroll;
+    border: 1px solid var(--color-base-35);
+    border-radius: 5pt;
+}
+
+.markdown-preview-view .mermaid svg {
+    height: auto;
+}
+
+.edgeLabel {
+    background-color: transparent;
+}

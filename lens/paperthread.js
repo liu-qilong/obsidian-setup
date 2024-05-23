@@ -1,5 +1,5 @@
 class PaperThread {
-    list_style = 'stroke:#f9f, stroke-width:2px, stroke-dasharray: 5 5'
+    list_style = 'fill:#bbbbbba0, stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
     paper_embed_style = 'max-width:200px;max-height:200px;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
 
     set_up(dv) {
@@ -38,18 +38,17 @@ class PaperThread {
         }
 
         // draw thread node
-        let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">#${tag}</a>`):(`#${tag}`)
-        let title_str = (thread_title != '')?(`${thread_title}\n`):('')
-        commands.push(`${thread_id}([${title_str}${link_str}])`)
+        let branch_tag = tag.replace(`${source_tag}/`, '')
+        let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">#${branch_tag}</a>\n`):(`#${branch_tag}\n`)
+        let title_str = (thread_title != '')?(`${thread_title}`):('')
+        commands.push(`${thread_id}([${link_str}${title_str}])`)
         commands.push(`style ${thread_id} ${this.list_style}`)
 
         if (source_tag != '') {
-            let branch_tag = tag.replace(`${source_tag}/`, '')
-
             if (branch_tag.startsWith('pre-')) {
-                commands.push(`${thread_id} ---o |${branch_tag}| ${thread_id_dict[source_tag]}`)
+                commands.push(`${thread_id} ---> ${thread_id_dict[source_tag]}`)
             } else {
-                commands.push(`${thread_id_dict[source_tag]} ---o |${branch_tag}| ${thread_id}`)
+                commands.push(`${thread_id_dict[source_tag]} ---> ${thread_id}`)
             }
         }
     }
