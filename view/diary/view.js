@@ -1,9 +1,9 @@
 const {PaperThread} = await cJS()
+PaperThread.set_up(dv)
 const {DailyLens} = await cJS()
+DailyLens.set_up(dv)
 const {TagLens} = await cJS()
 TagLens.set_up(dv, PaperThread)
-DailyLens.set_up(dv)
-PaperThread.set_up(dv)
 
 const current_file = dv.current()
 
