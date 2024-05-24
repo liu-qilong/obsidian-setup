@@ -85,7 +85,7 @@ class TagLens {
             
             for (let page of this.dv.pages()) {
                 if (page.file.aliases.length != 0) {
-                    if (page.file.aliases[0][0] === '#') {
+                    if (page.file.aliases[0][0] === '#' & !page.file.aliases[0].includes('<')) {
                         let page_tag = page.file.aliases[0].replace('#', '')
                         this.tag2path[page_tag] = page.file.path
                         this.tag2title[page_tag] = page.file.name

@@ -35,9 +35,7 @@ class ThreadView {
     head() {
         dv.header(2, `Thread 🗞️ [total::${this.papers.length}] [skimmed::${this.papers.filter(p => String(p.bib_badge).includes('skimmed')).length}] [read::${this.papers.filter(p => String(p.bib_badge).includes('read')).length}]`)
 
-        this.commands.push(`\`\`\`mermaid\nflowchart TD`)
-        // statistics
-        
+        this.commands.push(`\`\`\`mermaid <!-- element style="width:1200%; height:auto" -->\nflowchart TD`)
         PaperThread.thread_node(this.current_tag, '', {}, this.commands)
     }
 
@@ -150,6 +148,7 @@ class ThreadView {
     end() {
         this.commands.push('```')
         dv.paragraph(this.commands.join('\n'))
+        console.log(this.commands.join('\n'))
     }
 }
 

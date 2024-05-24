@@ -1,6 +1,6 @@
 class PaperThread {
     list_style = 'stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
-    paper_embed_style = 'max-width:200px;max-height:200px;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
+    paper_embed_style = 'max-width:15em;max-height:20em;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
 
     set_up(dv, TagLens) {
         this.dv = dv
