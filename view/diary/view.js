@@ -6,6 +6,7 @@ PaperThread.set_up(dv, TagLens)
 TagLens.set_up(dv, PaperThread)
 
 const current_file = dv.current()
+const current_name = dv.current().file.name
 
 // parse periods dates
 let dates, duration
@@ -182,18 +183,27 @@ if (tasks.length > 0) {
 // thoughts during this period
 let thoughts = []
 
-for (let date of dates.reverse()) {
-	try {
-		let page = dv.page(date)
+if (dates.length > 1) {
+	for (let date of dates.reverse()) {
+		try {
+			let page = dv.page(date)
 
-		for (let ls of page.file.lists) {
-			if (!ls.task) {
-				thoughts.push(ls)
+			for (let ls of page.file.lists) {
+				if (!ls.task) {
+					thoughts.push(ls)
+				}
 			}
+		} catch {
+			continue
 		}
-	} catch {
-		continue
 	}
+	
+	TagLens.show_thoughts(thoughts)
 }
-    
-TagLens.show_thoughts(thoughts)
+
+// thoughts mention this periods
+thoughts = dv.pages(`#Type/Diary and [[]]`).file.lists
+    .where(ls => (!ls.task & (ls.text.includes(current_name))))
+    .sort(ls => dv.date(ls.link), 'desc')
+
+TagLens.show_thoughts(thoughts, 'Mentions 💡')

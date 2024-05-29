@@ -7,9 +7,13 @@ max_depth:
 scroll: false
 no_flow: false
 no_list: false
-no_bibtex: false
+no_bibtex: true
 ---
 
 ```dataviewjs
 await dv.view('obsidian-setup/view/thread')
+```
+
+```dataviewjs
+await dv.view('obsidian-setup/view/taglens')
 ```

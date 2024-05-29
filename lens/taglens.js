@@ -64,9 +64,9 @@ class TagLens {
         }
     }
 
-    show_thoughts(thoughts) {
+    show_thoughts(thoughts, title = 'Thoughts 💡') {
         if (thoughts.length > 0) {
-            this.dv.header(2, 'Thoughts 💡')
+            this.dv.header(2, title)
             this.dv.table(
                 ['link', 'text'],
                 thoughts.map(ls => {

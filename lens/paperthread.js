@@ -58,7 +58,7 @@ class PaperThread {
 
         // assemble strings
         let seg_line = '------------------------------'
-        let link_str = `<a class="internal-link" data-href="${p.file.path}">${bib_id}</a>`
+        let link_str = `<a class="internal-link" data-href="${p.file.path}">${p.bib_id}</a>`
         let badge_str = this.bib_badge2str(p.bib_badge)
         let cite_str = (p.bib_cites != null)?(`[${this.to_short_num(p.bib_cites)}]`):('')
         let note_str = (this.dv.isArray(p.bib_note) && p.bib_note.length > 0)?(`${seg_line}\n` + p.bib_note.join('\n')):('')
