@@ -93,14 +93,16 @@ class ThreadView {
 		let thread_id_dict = {}
 
 		function recursive_draw(obj, tag, node, source_tag) {
-			if (Object.keys(node).length === 1) {
-				// the current node only has 1 child
+			let [_, path] = TagLens.get_tag_page_title_path(tag)
+
+			if ((Object.keys(node).length === 1) & (path === '')) {
+				// the current node only has 1 child and without linked thread note
 				let sub_tag = Object.keys(node)[0]
 				let sub_node = Object.values(node)[0]
 				let pre_str = (tag != '')?(`${tag}/`):('')
 				recursive_draw(obj, `${pre_str}${sub_tag}`, sub_node, source_tag)
 			} else {
-				// the current node is a leaf node or have multiple children
+				// the current node is a leaf node or have multiple children or has linked thread note
 				PaperThread.thread_node(tag, source_tag, thread_id_dict, obj.commands)
 
 				for (let [sub_tag, sub_node] of Object.entries(node)) {
