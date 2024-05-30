@@ -18,13 +18,37 @@ class DailyLens {
         this.dv = dv
     }
 
+    // formatting
+    date2str(date) {
+        return String(date).split('T')[0]
+    }
+
+    date_str2year_month_day(date) {
+        let [year, month, day] = date.split('-')
+        return {
+            'year': year,
+            'month': month,
+            'day': day,
+        }
+    }
+
     // dates
     days_later(date_str, days) {
         let date = new Date(date_str)
         date.setDate(date.getDate() + days)
         return date.toISOString().split('T')[0]
     }
-    
+
+    days_before(date_str, days) {
+        let date = new Date(date_str)
+        date.setDate(date.getDate() - days)
+        return date.toISOString().split('T')[0]
+    }
+
+    dates_till_date(date, duration = 7) {
+        return Array.from({ length: duration }, (_, i) => this.days_before(date, duration - i - 1))
+    }
+
     day_dates(date) {
         return [String(date).split('T')[0]]
     }

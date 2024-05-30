@@ -49,7 +49,7 @@ class TimeChart {
 		//    sum of 1st 2 types time_array,
 		//    ...
 		// ]
-		let sum = Array.from({ length: duration }, () => 0)
+		let sum = Array.from({ length: this.duration }, () => 0)
 		this.arr_sum = Object.values(this.time_dict).map(
 			(arr) => {
 				sum = sum.map((value, idx) => value + arr[idx])
@@ -66,7 +66,7 @@ class TimeChart {
 
 		let mermaid_style = ""
 
-		if (duration <= 7) {
+		if (this.duration <= 20) {
 			mermaid_style = `%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '${DailyLens.color_palette}'}}}}%%`
 			// xyChart/backgroundColor: background color
 			// xyChart/plotColorPalette: plot color palette
@@ -78,16 +78,12 @@ class TimeChart {
 		}
 
 		let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
-		commands.push(`title ${Object.keys(this.time_dict).join('-')}`)
 		commands.push(`y-axis "Time (h) ${Object.keys(this.time_dict).join('/')}" 0 --> ${Math.max(...this.arr_sum.flat())}`)
 
-		
-		if (current_file.tags.includes('Type/Diary')) {
-			commands.push('x-axis [today]')
-		} else if (current_file.tags.includes('Type/Week')) {
+		if (current_file.tags.includes('Type/Week')) {
 			commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
 		} else {
-			commands.push(`x-axis [${Array.from({ length: duration }, (_, i) => i + 1)}]`)
+			commands.push(`x-axis [${this.dates.map(d => DailyLens.date_str2year_month_day(d).day).join(', ')}]`)
 		}
 
 		for (let arr of this.arr_sum.reverse()) {
@@ -98,15 +94,8 @@ class TimeChart {
 	}
 
 	table() {
-		let tab_header
-
 		// first column
-		if (this.duration > 1) {
-			tab_header = ['total & avg']
-		} else {
-			tab_header = ['total']
-		}
-
+		let tab_header = ['total & avg']
 		let tab_total = [this.total_time.toFixed(2)]
 		let tab_avg = [(this.total_time / this.duration_with_time_stat).toFixed(2)]
 		
@@ -119,21 +108,23 @@ class TimeChart {
 		}
 
 		// plot table
-		if (duration > 1) {
-			dv.table(
-				tab_header,
-				[tab_total, tab_avg],
-			)
-		} else {
-			dv.table(
-				tab_header,
-				[tab_total],
-			)
-		}
+		dv.table(
+			tab_header,
+			[tab_total, tab_avg],
+		)
 	}
 }
 
-new TimeChart(dates, duration)
+if (current_file.tags.includes('Type/Diary')) {
+	new TimeChart(
+		DailyLens.dates_till_date(
+			DailyLens.date2str(dv.current().date),
+			7,
+		),
+		7)
+} else {
+	new TimeChart(dates, duration)
+}
 
 // pages created/updated during this period separated by type
 for (let tag_name of Object.keys(DailyLens.tag_dict)) {
