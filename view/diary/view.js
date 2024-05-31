@@ -78,7 +78,11 @@ class TimeChart {
 		}
 
 		let commands = [`\`\`\`mermaid\n${mermaid_style}\nxychart-beta`]
-		commands.push(`y-axis "Time (h) ${Object.keys(this.time_dict).join('/')}" 0 --> ${Math.max(...this.arr_sum.flat())}`)
+
+		let upper_bound = Math.max(...this.arr_sum.flat())
+		let preset_bound = 10
+
+		commands.push(`y-axis "Time (h) ${Object.keys(this.time_dict).join('/')}" 0 --> ${(upper_bound > preset_bound)?(upper_bound):(preset_bound)}`)
 
 		if (current_file.tags.includes('Type/Week')) {
 			commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
