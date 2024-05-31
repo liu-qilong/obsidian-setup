@@ -19,6 +19,8 @@ if (file.doi === null && file.bibtex === null) {
 		dv.paragraph("_[progress] got `bibtex` from properties field_")
 	}
 
+	dv.paragraph(`\`\`\`\n${bibtex}\n\`\`\``)
+
 	// convert bibtex to yaml
 	async function parse_bitex(bibtexData, gen_id = false, lower_case_type = true) {
 		// match type, id, & fields
