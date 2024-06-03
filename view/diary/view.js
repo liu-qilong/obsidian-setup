@@ -66,7 +66,7 @@ class TimeChart {
 
 		let mermaid_style = ""
 
-		if (this.duration <= 20) {
+		if (this.duration <= 7) {
 			mermaid_style = `%%{init: {'themeVariables': {'xyChart': {'backgroundColor': '#00000000', 'plotColorPalette': '${DailyLens.color_palette}'}}}}%%`
 			// xyChart/backgroundColor: background color
 			// xyChart/plotColorPalette: plot color palette
@@ -86,8 +86,10 @@ class TimeChart {
 
 		if (current_file.tags.includes('Type/Week')) {
 			commands.push('x-axis [mon, tue, wed, thu, fri, sat, sun]')
-		} else {
+		} else if (current_file.tags.includes('Type/Diary')) {
 			commands.push(`x-axis [${this.dates.map(d => DailyLens.date_str2year_month_day(d).day).join(', ')}]`)
+		} else {
+			commands.push(`x-axis [${Array.from({ length: this.duration }, (_, i) => i).join(', ')}]`)
 		}
 
 		for (let arr of this.arr_sum.reverse()) {

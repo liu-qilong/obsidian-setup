@@ -67,7 +67,7 @@ class DailyLens {
         let start = new Date(year, month, 1)
         let end = new Date(year, month + 3, 0)
         let duration = (end - start) / (1000 * 60 * 60 * 24) + 1
-        return Array.from({ length: duration }, (_, i) => this.days_later(start, i))
+        return Array.from({ length: duration }, (_, i) => this.days_later(start, i + 1))
     }
 
     timestr2hour(time_str) {
