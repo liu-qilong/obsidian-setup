@@ -194,8 +194,6 @@ if (dates.length > 1) {
 			continue
 		}
 	}
-	
-	TagLens.show_thoughts(thoughts)
 }
 
 // thoughts mention this periods
