@@ -26,11 +26,11 @@ class TagLens {
         },
         'Type/Course': {
             'show_name': 'Course 👨🏼‍🏫',
-            'show_vars': [],
+            'show_vars': ['lecturer',],
         },
         'Type/Book': {
             'show_name': 'Books 📚',
-            'show_vars': [],
+            'show_vars': ['author',],
         },
     }
 

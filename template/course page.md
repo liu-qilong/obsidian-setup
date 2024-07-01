@@ -1,6 +1,7 @@
 ---
 tags:
   - Type/Course
+lecturer: 
 ---
 
 ## Contents 📋

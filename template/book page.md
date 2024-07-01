@@ -1,6 +1,7 @@
 ---
 tags:
   - Type/Book
+author: 
 ---
 
 ## Contents 📋
