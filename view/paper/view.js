@@ -37,6 +37,7 @@ class ThreadView {
 
 	head() {
 		dv.header(2, `Thread 🗞️`)
+		dv.paragraph(`\`\`\`\n${this.current_file.bib_id}\n\`\`\``)
 	}
 
 	draw_current_paper() {

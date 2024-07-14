@@ -1,5 +1,4 @@
 class PaperThread {
-    list_style = 'stroke:#000000, stroke-width:2px, stroke-dasharray: 5 5'
     paper_embed_style = 'max-width:15em;max-height:20em;text-align:left;line-height:100%;padding:5px;overflow-x:scroll;'
 
     set_up(dv, TagLens) {
@@ -32,8 +31,7 @@ class PaperThread {
         let branch_tag = (source_tag != '')?(tag.replace(`${source_tag}/`, '')):(`#${tag}`)
         let link_str = (thread_title != '')?(`<a class="internal-link" data-href="${thread_path}">${branch_tag}</a>\n`):(`${branch_tag}\n`)
         let title_str = (thread_title != '')?(`${thread_title}`):('')
-        commands.push(`${thread_id}([${link_str}${title_str}])`)
-        commands.push(`style ${thread_id} ${this.list_style}`)
+        commands.push(`${thread_id}(${link_str}${title_str})`)
 
         if (source_tag != '') {
             if (branch_tag.startsWith('pre-')) {
