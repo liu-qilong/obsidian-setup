@@ -196,6 +196,8 @@ if (dates.length > 1) {
 	}
 }
 
+TagLens.show_thoughts(thoughts, 'Thoughts 💡')
+
 // thoughts mention this periods
 thoughts = dv.pages(`#Type/Diary and [[]]`).file.lists
     .where(ls => (!ls.task & (ls.text.includes(current_name))))
