@@ -1,0 +1,16 @@
+/* table */
+.table-view-table > thead > tr > th {
+    font-size: small;
+}
+
+.dataview.inline-field-key {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: small;
+}
+
+.dataview.inline-field-value {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: small;
+}

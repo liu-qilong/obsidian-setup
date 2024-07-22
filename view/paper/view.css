@@ -1,3 +1,4 @@
+/* mermaid */
 .markdown-preview-view .page_fit_class .mermaid {
     display: flex;
     justify-content: center;
@@ -20,4 +21,21 @@
 
 .edgeLabel {
     background-color: transparent !important;
+}
+
+/* table */
+.table-view-table > thead > tr > th {
+    font-size: small;
+}
+
+.dataview.inline-field-key {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: small;
+}
+
+.dataview.inline-field-value {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: small;
 }
