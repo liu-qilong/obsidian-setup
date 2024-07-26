@@ -4,7 +4,7 @@
 
 # My [Obsidian](https://obsidian.md) setup
 
-_P.S. For readability, click the [menu icon](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) on the top-left corner to see the table of contents._
+_P.S. For readability, click the [menu icon](https://github.blog/changelog/2021-04-13-table-of-contents-support-in-markdown-files/) on the top-right corner to see the table of contents._
 
 ## Introduction
 
