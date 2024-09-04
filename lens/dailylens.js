@@ -32,6 +32,18 @@ class DailyLens {
         }
     }
 
+    // date parsing
+    get_week(date) {
+        let today = new Date(date)
+        let onejan = new Date(today.getFullYear(), 0, 1)
+        let dayOfYear = ((today - onejan + 86400000)/86400000)
+        return Math.ceil(dayOfYear/7)
+    }
+
+    get_year(date){
+        return new Date(date).getFullYear()
+    }
+
     // dates
     days_later(date_str, days) {
         let date = new Date(date_str)

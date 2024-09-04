@@ -161,6 +161,18 @@ for (let tag_name of Object.keys(DailyLens.tag_dict)) {
 		TagLens.show_related(show_name, show_vars, pages)
 }
 
+if (current_file.tags.includes('Type/Diary')) {
+	// goals from the associated weekly page
+	let weekly_note = `${DailyLens.get_year(current_file.date)}-W${DailyLens.get_week(current_file.date)}`
+	let goals = dv.page(weekly_note).file.lists
+		.where(ls => ls.task)
+
+	if (goals.length > 0) {
+		dv.header(2, 'Goals 🎯')
+		dv.taskList(goals)
+	}
+}
+
 // tasks completed during this period
 let tasks = dv.pages().file.tasks
 	.where(t => {
