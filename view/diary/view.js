@@ -55,6 +55,9 @@ class TimeChart {
 				sum = sum.map((value, idx) => value + arr[idx])
 				return sum
 			})
+		
+		// get the total time of the last day
+		this.total_time_last_day = sum[sum.length - 1]
 
 		// calculate the total time and the number of days with time statistics
 		this.total_time = sum.reduce((acc, val) => acc + val, 0)
@@ -62,7 +65,7 @@ class TimeChart {
 	}
 
 	chart() {
-		dv.header(2, `Time statistics 📊 [total::${this.total_time.toFixed(2)}] [avg::${(this.total_time / this.duration_with_time_stat).toFixed(2)}]`)
+		dv.header(2, `Time statistics 📊 [total::${this.total_time.toFixed(2)}] [avg::${(this.total_time / this.duration_with_time_stat).toFixed(2)}] [last::${this.total_time_last_day.toFixed(2)}]`)
 
 		let mermaid_style = ""
 
@@ -101,7 +104,7 @@ class TimeChart {
 
 	table() {
 		// first column
-		let tab_header = ['total & avg']
+		let tab_header = ['total & avg & last']
 		let tab_total = [this.total_time.toFixed(2)]
 		let tab_avg = [(this.total_time / this.duration_with_time_stat).toFixed(2)]
 		
