@@ -21,7 +21,7 @@ try {
 for (let tag_name of Object.keys(TagLens.tag_dict)) {
     let show_name = TagLens.tag_dict[tag_name]['show_name']
     let show_vars = TagLens.tag_dict[tag_name]['show_vars']
-    let pages = dv.pages(`#${tag_name} and ${query_str}`)
+    let pages = dv.pages(`#${tag_name} and ${query_str}`).sort(p => p.file.name)
 
     TagLens.show_related(show_name, show_vars, pages)
 }
