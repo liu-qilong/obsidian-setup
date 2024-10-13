@@ -308,12 +308,12 @@ Whenever you right-click a folder and click `New note`, it will create a new not
 Open `Settings` > `Daily notes`:
 
 - Fill `New file location` with `journal/diary`.
-- Fill `Template file location` with `obsidian-setup/template/diary page`.
+- Fill `Template file location` with `obsidian-setup/templates/diary page`.
 
 _P.S. If you can't find `Settings` > `Daily notes`, open `Settings` > `Core plugins` and confirm that the `Daily notes` core plugin is enabled._
 
 Open `Settings` > `Calendar`:
 
 - Set `Start week on` as `Monday`.
-- Fill `Weekly note template` with `obsidian-setup/template/week page.md`.
+- Fill `Weekly note template` with `obsidian-setup/templates/week page.md`.
 - Fill `Weekly note folder` with `journal/week`.

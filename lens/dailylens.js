@@ -107,7 +107,7 @@ class DailyLens {
                     }
                 }
             } catch {
-                continue
+            continue
             }
         }
         
