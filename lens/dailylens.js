@@ -68,9 +68,9 @@ class DailyLens {
     week_dates(year, week) {
         let date = new Date(`${year}-01-01`)
         let day_of_week = date.getDay()
-        let first_mon = new Date(date.setDate(1 + (1 + 7 - day_of_week) % 7))
+        let day_till_first_mon = (7 - (day_of_week - 1)) % 7
+        let first_mon = new Date(date.setDate(1 + day_till_first_mon))
         let week_start = new Date(first_mon.setDate(first_mon.getDate() + (week - 1) * 7))
-        
         return Array.from({ length: 7 }, (_, i) => this.days_later(week_start, i))
     }
     

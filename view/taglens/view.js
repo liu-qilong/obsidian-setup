@@ -32,3 +32,13 @@ let thoughts = dv.pages(`#Type/Diary and ${query_str}`).file.lists
     .sort(ls => dv.date(ls.link), 'desc')
     
 TagLens.show_thoughts(thoughts)
+
+// tagged/linked completed tasks
+let tasks = dv.pages(query_str).file.tasks
+    .where(t => (t.checked & (t.text.includes(current_name) | t.text.includes(current_tag))))
+    .groupBy(t => dv.page(t.path).file.name)
+
+if (tasks.length > 0) {
+	dv.header(2, 'Completed 🦾')
+	dv.taskList(tasks)
+}
