@@ -10,7 +10,7 @@
     border-radius: 5px;
     margin: 2px;
     padding: 2px;
-    background-color: var(--color-base-35);
+    background-color: var(--background-modifier-hover);
     max-width: 20%;
 }
   
